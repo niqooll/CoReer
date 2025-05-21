@@ -50,3 +50,47 @@
   height: 60px; /* contoh, atur sesuai kebutuhan */
   width: auto;
 }
+
+/* Override Bootstrap primary button to use your custom colors */
+.btn-primary {
+  background-color: var(--normal);
+  border-color: var(--normal);
+  color: white;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--normal-hover);
+  border-color: var(--normal-hover);
+  color: white;
+}
+
+.btn-primary:active {
+  background-color: var(--normal-active);
+  border-color: var(--normal-active);
+  color: white;
+}
+
+/* Jika ingin juga override btn-success (register button) */
+.btn-success {
+  background-color: var(--normal);
+  border-color: var(--normal);
+  color: white;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+  background-color: var(--normal-hover);
+  border-color: var(--normal-hover);
+  color: white;
+}
+
+.btn-success:active {
+  background-color: var(--normal-active);
+  border-color: var(--normal-active);
+  color: white;
+}

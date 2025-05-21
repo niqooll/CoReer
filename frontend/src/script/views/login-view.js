@@ -1,16 +1,43 @@
 // src/script/views/login-view.js
-
 export function renderLogin(errorMessage = '') {
   return `
-    <h2>Login</h2>
-    <form id="login-form">
-      <input type="text" name="username" placeholder="Username" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p class="error-message">${errorMessage}</p>
+    <div class="container" style="max-width: 450px; margin: 3rem auto;">
+      <div class="card p-4 shadow-sm">
+        <h3 class="card-title text-center mb-4">Login to CoReer</h3>
+        <form id="login-form" novalidate>
+          <div class="mb-3">
+            <label for="username" class="form-label">Username or Email</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-control"
+              placeholder="Enter username or email"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <p class="text-danger mt-1 text-center">${errorMessage}</p>
+        <div class="mt-1 text-center">
+          Don't have an account? <a href="/register">Register here</a>
+        </div>
+      </div>
+    </div>
   `;
 }
+
 
 export function bindLoginFormSubmit(callback) {
   const form = document.getElementById('login-form');
