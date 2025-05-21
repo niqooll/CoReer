@@ -1,70 +1,52 @@
-/* Navbar styling */
-nav {
-  padding: 10px 20px;
-  background-color: #007bff;
-  display: flex;
-  gap: 10px;
+:root {
+  --sec-normal: #f5eedc; /* warna header yang kamu mau */
+  --normal: #3ca9c3;
+  --normal-hover: #3698b0;
+  --normal-active: #30879c;
 }
 
-/* Navbar buttons */
-nav button {
+/* Override navbar Bootstrap supaya pakai warna custom */
+.custom-navbar {
+  padding-left: 3rem;
+  padding-right: 3rem;
+  background-color: var(--sec-normal);
+}
+
+/* Kalau navbar toggler icon terlalu gelap, bisa diubah */
+.custom-navbar .navbar-toggler-icon {
+  filter: invert(0.4); /* atur supaya icon terlihat jelas */
+}
+
+/* Nav link pakai warna sesuai var --normal */
+.custom-navbar .nav-link {
+  color: var(--normal);
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 4px;
   padding: 8px 16px;
-  cursor: pointer;
-  color: white;
-  background-color: #0056b3;
-  border: none;
-  border-radius: 4px;
-  font-weight: 600;
   transition: background-color 0.3s ease;
 }
 
-nav button:hover, nav button:focus {
-  background-color: #003d80;
-  outline: none;
-}
-
-/* Main app container */
-#app {
-  margin: 20px auto;
-  max-width: 400px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
-
-/* Input fields style */
-input {
-  margin: 10px 0;
-  padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-/* Submit buttons and logout */
-button[type="submit"], #logout-btn {
-  padding: 10px 16px;
-  cursor: pointer;
-  background-color: #28a745;
-  border: none;
-  border-radius: 4px;
+.custom-navbar .nav-link:hover {
+  background-color: var(--normal-hover);
   color: white;
-  font-weight: bold;
-  font-size: 1rem;
-  width: 100%;
-  margin-top: 10px;
-  transition: background-color 0.3s ease;
 }
 
-button[type="submit"]:hover, #logout-btn:hover {
-  background-color: #218838;
+.custom-navbar .nav-link:active {
+  background-color: var(--normal-active);
+  color: white;
 }
 
-/* Error message styling */
-.error-message {
-  color: #dc3545;
-  margin-top: 8px;
+/* Navbar brand (logo) styling */
+.custom-navbar .navbar-brand {
+  color: var(--normal);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
+  text-decoration: none;
+  margin-right: 2rem;
+}
+
+.logo-image {
+  height: 60px; /* contoh, atur sesuai kebutuhan */
+  width: auto;
 }

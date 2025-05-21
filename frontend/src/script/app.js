@@ -13,19 +13,15 @@ function renderPage(path) {
 export function initApp() {
   renderPage(window.location.pathname);
 
-  document.querySelectorAll('nav button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      let path = '/';
-      switch (btn.dataset.page) {
-        case 'login': path = '/login'; break;
-        case 'register': path = '/register'; break;
-        case 'landing': path = '/'; break;
-        case 'main': path = '/main'; break;
-      }
+  document.querySelectorAll('nav a').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const path = link.getAttribute('href');
       history.pushState({}, '', path);
       renderPage(path);
     });
   });
+
 
   window.addEventListener('popstate', () => {
     renderPage(window.location.pathname);
