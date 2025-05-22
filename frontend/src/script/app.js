@@ -1,8 +1,39 @@
 // src/script/app.js
 import routes from './routes/routes.js';
+import { getCurrentUser } from './models/auth-model.js';
 
-function renderPage(path) {
+function updateNavLinks() {
+  const user = getCurrentUser();
+
+  const loginLink = document.getElementById('login-link');
+  const registerLink = document.getElementById('register-link');
+  const profileDropdown = document.getElementById('profile-dropdown');
+
+  if (user) {
+    loginLink.style.display = 'none';
+    registerLink.style.display = 'none';
+    profileDropdown.style.display = 'block';
+  } else {
+    loginLink.style.display = 'block';
+    registerLink.style.display = 'block';
+    profileDropdown.style.display = 'none';
+  }
+}
+
+function bindLogoutButton(callback) {
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      callback();
+    });
+  }
+}
+
+function renderPage() {
+  const hash = window.location.hash || '#/';
+  const path = hash.slice(1); // Menghapus '#' di depan
   const presenter = routes[path];
+
   if (presenter) {
     presenter.init();
   } else {
@@ -11,19 +42,24 @@ function renderPage(path) {
 }
 
 export function initApp() {
-  renderPage(window.location.pathname);
+  updateNavLinks();
+  renderPage();
 
-  document.querySelectorAll('nav a').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      const path = link.getAttribute('href');
-      history.pushState({}, '', path);
-      renderPage(path);
+  document.querySelectorAll('a.nav-link.dropdown-toggle').forEach((dropdownToggle) => {
+    dropdownToggle.addEventListener('click', (e) => {
+      e.preventDefault(); // Cegah perubahan hash
     });
   });
 
 
-  window.addEventListener('popstate', () => {
-    renderPage(window.location.pathname);
+  bindLogoutButton(() => {
+    localStorage.removeItem('currentUser');
+    updateNavLinks();
+    window.location.hash = '#/';
+  });
+
+  window.addEventListener('hashchange', () => {
+    updateNavLinks();
+    renderPage();
   });
 }

@@ -8,9 +8,25 @@ export default class LandingPresenter {
 
   init() {
     this.render();
+    this.attachEventListeners();
   }
 
   render() {
     this.app.innerHTML = LandingView.renderLanding();
+  }
+
+  attachEventListeners() {
+    const checkBtn = document.getElementById('btn-check-cv');
+    if (checkBtn) {
+      checkBtn.addEventListener('click', () => {
+        const isLoggedIn = !!localStorage.getItem('currentUser');
+        if (!isLoggedIn) {
+          window.location.hash = '#/login';
+        } else {
+          window.location.hash = '#/main';
+        }
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      });
+    }
   }
 }

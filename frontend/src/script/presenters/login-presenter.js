@@ -23,7 +23,8 @@ async handleLogin(data) {
     const user = await login(data.username, data.password);
     // Login sukses
     localStorage.setItem('currentUser', JSON.stringify(user));
-    history.pushState({}, '', '/main');
+    window.location.hash = '#/main';
+
     window.dispatchEvent(new PopStateEvent('popstate'));
   } catch (err) {
     this.errorMessage = 'Login gagal: ' + err.message;
