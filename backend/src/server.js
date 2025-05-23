@@ -1,4 +1,5 @@
 // backend/src/server.js
+require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const { pool, testConnection } = require('./config/db'); // import testConnection
 const routes = require('./routes');

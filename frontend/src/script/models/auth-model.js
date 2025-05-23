@@ -21,9 +21,16 @@ export async function login(email, password) {
   }
 
   const result = await res.json();
-  const user = result.user;
-  localStorage.setItem('currentUser', JSON.stringify(user));
-  return user;
+  
+  // Simpan user dan token ke localStorage
+  const userData = {
+    token: result.token,
+    email: email,
+    username: result.username || null,
+  };
+
+  localStorage.setItem('currentUser', JSON.stringify(userData));
+  return userData;
 }
 
 // Fungsi Register
@@ -46,18 +53,25 @@ export async function register(username, email, password) {
   return res.json();
 }
 
-
+// Fungsi untuk ambil user dari localStorage
 export function getCurrentUser() {
   const userJson = localStorage.getItem('currentUser');
-  if (!userJson) return null;
+  if (!userJson || userJson === 'undefined') return null;
 
   try {
     return JSON.parse(userJson);
   } catch (_) {
+    localStorage.removeItem('currentUser');
     return null;
   }
 }
 
+// Cek apakah user sudah login
+export function isLoggedIn() {
+  return !!getCurrentUser();
+}
+
+// Logout / hapus data user di localStorage
 export function logout() {
   localStorage.removeItem('currentUser');
 }

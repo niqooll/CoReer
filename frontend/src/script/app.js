@@ -1,6 +1,6 @@
 // src/script/app.js
 import routes from './routes/routes.js';
-import AuthHelper from './utils/auth-helper.js';
+import { getCurrentUser, logout as performLogout } from './models/auth-model.js';
 import { applyViewTransition } from './utils/index.js';
 
 class App {
@@ -27,7 +27,7 @@ class App {
   }
 
   updateNavLinks() {
-    const user = AuthHelper.getCurrentUser();
+    const user = getCurrentUser();
 
     const loginLink = document.getElementById('login-link');
     const registerLink = document.getElementById('register-link');
@@ -48,7 +48,7 @@ class App {
   }
 
   async renderPage() {
-    const user = AuthHelper.getCurrentUser();
+    const user = getCurrentUser();
     const hash = window.location.hash || '#/';
     const path = hash.slice(1);
 
@@ -79,7 +79,7 @@ class App {
   }
 
   logout() {
-    AuthHelper.clearAuth();
+    performLogout();
     this.updateNavLinks();
     window.location.hash = '#/';
   }

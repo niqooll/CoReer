@@ -1,6 +1,9 @@
 // backend/src/routes/index.js
 const { pool } = require('../config/db');
 const bcrypt = require('bcrypt');
+require('dotenv').config(); // load .env
+const jwt = require('jsonwebtoken');
+
 
 const routes = [
   {
@@ -36,7 +39,6 @@ const routes = [
     },
   },
 
-
   {
     method: 'POST',
     path: '/login',
@@ -61,13 +63,24 @@ const routes = [
         }).code(401);
       }
 
-      return {
-        status: 'success',
-        message: 'Login successful',
-        user: {
+      // Buat token JWT
+      const token = jwt.sign(
+        {
+          id: user.id,
           username: user.username,
           email: user.email,
         },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
+
+      return {
+        status: 'success',
+        message: 'Login successful',
+        token,
+        username: user.username,
       };
     },
   },
