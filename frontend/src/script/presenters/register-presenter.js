@@ -1,5 +1,6 @@
 // src/script/presenter/register-presenter.js
 import * as RegisterView from '../views/register-view.js';
+import * as AuthModel from '../models/auth-model.js';
 
 export default class RegisterPresenter {
   constructor(appContainer) {
@@ -16,43 +17,17 @@ export default class RegisterPresenter {
     RegisterView.bindRegisterFormSubmit(this.handleRegister.bind(this));
   }
 
-  handleRegister(data) {
-    if (data.password !== data.passwordConfirm) {
-      this.errorMessage = 'Passwords do not match';
+  async handleRegister(data) {
+    // hapus cek passwordConfirm
+
+    try {
+      await AuthModel.register(data.username, data.email, data.password);
+
+      RegisterView.showSuccessMessage(`User ${data.username} registered successfully!`);
+      RegisterView.redirectToLogin();
+    } catch (error) {
+      this.errorMessage = error.message;
       this.render();
-      return;
     }
-
-    // Kirim data ke backend
-    fetch('http://localhost:3000/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: data.username,
-        password: data.password,
-      }),
-    })
-      .then(async (response) => {
-        const result = await response.json();
-
-        if (!response.ok) {
-          // Kalau error dari backend, tampilkan pesan errornya
-          this.errorMessage = result.message || 'Registration failed';
-          this.render();
-        } else {
-          alert(`User ${data.username} registered successfully!`);
-
-          // Redirect ke halaman login
-          history.pushState({}, '', '/login');
-          window.dispatchEvent(new PopStateEvent('popstate'));
-        }
-      })
-      .catch((err) => {
-        this.errorMessage = 'Failed to register. Please try again later.';
-        this.render();
-        console.error(err);
-      });
   }
 }

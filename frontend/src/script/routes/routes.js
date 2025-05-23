@@ -12,7 +12,6 @@ const routes = {
   '/login': new LoginPresenter(app),
   '/register': new RegisterPresenter(app),
   '/main': new MainPresenter(app),
-  // Tambahkan lainnya sesuai kebutuhan
 };
 
 export default routes;

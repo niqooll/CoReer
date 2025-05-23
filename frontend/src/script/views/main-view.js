@@ -23,6 +23,7 @@ export function renderMainPage(onLogout, errorMessage = '') {
             </div>
             <input type="file" id="cv-upload" accept=".pdf" class="form-control mt-3" />
             <small class="text-muted d-block mt-2">Supported format: PDF only. Max file size 5MB.</small>
+            <button id="btn-analyze" class="btn btn-primary mt-2" disabled>Analyze</button>
           </div>
 
           <!-- RIGHT SIDE -->
@@ -47,4 +48,55 @@ export function bindLogoutButton(callback) {
       callback();
     });
   }
+}
+
+export function bindUploadAndPreview() {
+  const fileInput = document.getElementById('cv-upload');
+  const previewContainer = document.getElementById('cv-preview');
+  const dropZone = document.getElementById('drop-zone');
+  const analyzeBtn = document.getElementById('btn-analyze');
+
+  if (!fileInput || !previewContainer || !dropZone || !analyzeBtn) return;
+
+  function updateAnalyzeButton(enabled) {
+    analyzeBtn.disabled = !enabled;
+  }
+
+  function showPreview(file) {
+    if (file && file.type === 'application/pdf') {
+      if (file.size > 5 * 1024 * 1024) {
+        previewContainer.innerHTML = `<p class="text-danger text-center">File too large. Max 5MB allowed.</p>`;
+        updateAnalyzeButton(false);
+        return;
+      }
+      const fileURL = URL.createObjectURL(file);
+      previewContainer.innerHTML = `<iframe src="${fileURL}" width="100%" height="100%"></iframe>`;
+      updateAnalyzeButton(true);
+    } else {
+      previewContainer.innerHTML = `<p class="text-danger text-center">Invalid file. Please upload a .pdf</p>`;
+      updateAnalyzeButton(false);
+    }
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    showPreview(file);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('bg-light');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('bg-light');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('bg-light');
+    const file = e.dataTransfer.files[0];
+    fileInput.files = e.dataTransfer.files;
+    showPreview(file);
+  });
 }

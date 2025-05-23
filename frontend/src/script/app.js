@@ -1,68 +1,93 @@
 // src/script/app.js
 import routes from './routes/routes.js';
-import { getCurrentUser } from './models/auth-model.js';
+import AuthHelper from './utils/auth-helper.js';
+import { applyViewTransition } from './utils/index.js';
 
-function updateNavLinks() {
-  const user = getCurrentUser();
-
-  const loginLink = document.getElementById('login-link');
-  const registerLink = document.getElementById('register-link');
-  const profileDropdown = document.getElementById('profile-dropdown');
-  const landingLink = document.getElementById('landing-link'); // tambahkan ini
-
-  if (user) {
-    loginLink.style.display = 'none';
-    registerLink.style.display = 'none';
-    profileDropdown.style.display = 'block';
-    landingLink.style.display = 'block'; // tampilkan Home hanya jika login
-  } else {
-    loginLink.style.display = 'block';
-    registerLink.style.display = 'block';
-    profileDropdown.style.display = 'none';
-    landingLink.style.display = 'none'; // sembunyikan Home jika belum login
+class App {
+  constructor({ appContainerId = 'app' } = {}) {
+    this.appContainer = document.getElementById(appContainerId);
+    this.publicRoutes = ['/', '/login', '/register'];
+    this._bindEvents();
   }
-}
 
-function bindLogoutButton(callback) {
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-      callback();
+  _bindEvents() {
+    document.querySelectorAll('a.nav-link.dropdown-toggle').forEach(dropdownToggle => {
+      dropdownToggle.addEventListener('click', e => e.preventDefault());
+    });
+
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => this.logout());
+    }
+
+    window.addEventListener('hashchange', () => {
+      this.updateNavLinks();
+      this.renderPage();
     });
   }
-}
 
-function renderPage() {
-  const hash = window.location.hash || '#/';
-  const path = hash.slice(1); // Menghapus '#' di depan
-  const presenter = routes[path];
+  updateNavLinks() {
+    const user = AuthHelper.getCurrentUser();
 
-  if (presenter) {
-    presenter.init();
-  } else {
-    document.getElementById('app').innerHTML = '<h1>404 Page Not Found</h1>';
+    const loginLink = document.getElementById('login-link');
+    const registerLink = document.getElementById('register-link');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const landingLink = document.getElementById('landing-link');
+
+    if (user) {
+      if (loginLink) loginLink.style.display = 'none';
+      if (registerLink) registerLink.style.display = 'none';
+      if (profileDropdown) profileDropdown.style.display = 'block';
+      if (landingLink) landingLink.style.display = 'block';
+    } else {
+      if (loginLink) loginLink.style.display = 'block';
+      if (registerLink) registerLink.style.display = 'block';
+      if (profileDropdown) profileDropdown.style.display = 'none';
+      if (landingLink) landingLink.style.display = 'none';
+    }
   }
-}
 
-export function initApp() {
-  updateNavLinks();
-  renderPage();
+  async renderPage() {
+    const user = AuthHelper.getCurrentUser();
+    const hash = window.location.hash || '#/';
+    const path = hash.slice(1);
 
-  document.querySelectorAll('a.nav-link.dropdown-toggle').forEach((dropdownToggle) => {
-    dropdownToggle.addEventListener('click', (e) => {
-      e.preventDefault(); // Cegah perubahan hash
+    if (!user && !this.publicRoutes.includes(path)) {
+      window.location.hash = '#/login';
+      return;
+    }
+
+    const presenter = routes[path];
+
+    if (!presenter) {
+      this.appContainer.innerHTML = '<h1>404 Page Not Found</h1>';
+      return;
+    }
+
+    await applyViewTransition('#app', async () => {
+      if (typeof presenter === 'function' && presenter.prototype?.init instanceof Function) {
+        const instance = new presenter(this.appContainer);
+        if (instance.init instanceof Function) {
+          await instance.init();
+        }
+      } else if (presenter.init instanceof Function) {
+        await presenter.init();
+      } else {
+        this.appContainer.innerHTML = '<h1>Presenter Invalid</h1>';
+      }
     });
-  });
+  }
 
-
-  bindLogoutButton(() => {
-    localStorage.removeItem('currentUser');
-    updateNavLinks();
+  logout() {
+    AuthHelper.clearAuth();
+    this.updateNavLinks();
     window.location.hash = '#/';
-  });
+  }
 
-  window.addEventListener('hashchange', () => {
-    updateNavLinks();
-    renderPage();
-  });
+  async init() {
+    this.updateNavLinks();
+    await this.renderPage();
+  }
 }
+
+export default App;

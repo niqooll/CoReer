@@ -1,15 +1,16 @@
 // src/script/models/auth-model.js
-const API_BASE = 'http://localhost:3000'; // Ganti jika backend pakai port lain
+import CONFIG from '../config.js';
+
+const API_BASE = CONFIG.BASE_URL;
 
 // Fungsi Login
-export async function login(username, password) {
+export async function login(email, password) {
   const res = await fetch(`${API_BASE}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ email, password }),
   });
 
-  // Tangani error dari server
   if (!res.ok) {
     let errMessage = 'Login failed';
     try {
@@ -19,22 +20,20 @@ export async function login(username, password) {
     throw new Error(errMessage);
   }
 
-  // Ambil hasil dari backend
   const result = await res.json();
-  const user = result.user; // ✅ user disimpan di dalam object result
-  localStorage.setItem('currentUser', JSON.stringify(user)); // simpan session
+  const user = result.user;
+  localStorage.setItem('currentUser', JSON.stringify(user));
   return user;
 }
 
 // Fungsi Register
-export async function register(username, password) {
+export async function register(username, email, password) {
   const res = await fetch(`${API_BASE}/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, email, password }),
   });
 
-  // Tangani error dari server (misal: username sudah ada)
   if (!res.ok) {
     let errMessage = 'Register failed';
     try {
@@ -44,10 +43,10 @@ export async function register(username, password) {
     throw new Error(errMessage);
   }
 
-  return res.json(); // hasil: { status, message }
+  return res.json();
 }
 
-// Ambil data user yang sedang login dari localStorage
+
 export function getCurrentUser() {
   const userJson = localStorage.getItem('currentUser');
   if (!userJson) return null;
@@ -59,7 +58,6 @@ export function getCurrentUser() {
   }
 }
 
-// Logout user
 export function logout() {
   localStorage.removeItem('currentUser');
 }

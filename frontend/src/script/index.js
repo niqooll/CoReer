@@ -1,10 +1,10 @@
-// src/index.js
+// src/script/index.js
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import './styles/styles.css';
-import logo from './public/image/logo.png';
-import { initApp } from './script/app.js';
+import '../styles/styles.css';
+import logo from '../public/image/logo.png';
+import App from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const brandLink = document.querySelector('.navbar-brand');
@@ -18,5 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     brandLink.appendChild(logoImg);
   }
 
-  initApp();
+  const app = new App();
+  app.init();
 });

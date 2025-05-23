@@ -91,6 +91,19 @@ html, body {
   color: white;
 }
 
+/* Style tombol primary saat disabled */
+.btn-primary:disabled,
+.btn-primary[disabled] {
+  background-color: var(--normal);
+  border-color: var(--normal);
+  color: white;
+  opacity: 0.6;  /* supaya terlihat disabled tapi masih pakai warna utama */
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none; /* opsional, supaya benar-benar nonaktif */
+}
+
+
 @media (max-width: 991.98px) {
   .custom-navbar {
     padding-left: 1rem;

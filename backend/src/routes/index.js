@@ -7,20 +7,27 @@ const routes = [
     method: 'POST',
     path: '/register',
     handler: async (request, h) => {
-      const { username, password } = request.payload;
+      const { username, email, password } = request.payload;
 
-      // cek apakah username sudah ada di DB
-      const userCheck = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+      // cek apakah username atau email sudah ada di DB
+      const userCheck = await pool.query(
+        'SELECT * FROM users WHERE username = $1 OR email = $2',
+        [username, email]
+      );
+
       if (userCheck.rows.length > 0) {
         return h.response({
           status: 'fail',
-          message: 'Username already exists',
+          message: 'Username or email already exists',
         }).code(400);
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+      await pool.query(
+        'INSERT INTO users (username, email, password) VALUES ($1, $2, $3)',
+        [username, email, hashedPassword]
+      );
 
       return {
         status: 'success',
@@ -29,17 +36,18 @@ const routes = [
     },
   },
 
+
   {
     method: 'POST',
     path: '/login',
     handler: async (request, h) => {
-      const { username, password } = request.payload;
+      const { email, password } = request.payload;
 
-      const userQuery = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+      const userQuery = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
       if (userQuery.rows.length === 0) {
         return h.response({
           status: 'fail',
-          message: 'Invalid username or password',
+          message: 'Invalid email or password',
         }).code(401);
       }
 
@@ -49,7 +57,7 @@ const routes = [
       if (!validPassword) {
         return h.response({
           status: 'fail',
-          message: 'Invalid username or password',
+          message: 'Invalid email or password',
         }).code(401);
       }
 
@@ -58,6 +66,7 @@ const routes = [
         message: 'Login successful',
         user: {
           username: user.username,
+          email: user.email,
         },
       };
     },
