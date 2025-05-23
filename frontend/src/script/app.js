@@ -8,15 +8,18 @@ function updateNavLinks() {
   const loginLink = document.getElementById('login-link');
   const registerLink = document.getElementById('register-link');
   const profileDropdown = document.getElementById('profile-dropdown');
+  const landingLink = document.getElementById('landing-link'); // tambahkan ini
 
   if (user) {
     loginLink.style.display = 'none';
     registerLink.style.display = 'none';
     profileDropdown.style.display = 'block';
+    landingLink.style.display = 'block'; // tampilkan Home hanya jika login
   } else {
     loginLink.style.display = 'block';
     registerLink.style.display = 'block';
     profileDropdown.style.display = 'none';
+    landingLink.style.display = 'none'; // sembunyikan Home jika belum login
   }
 }
 
