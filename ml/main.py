@@ -18,6 +18,7 @@ from tensorflow.keras.layers import Input, Dense, Embedding, LSTM, Dropout
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import warnings
+import math # Import math untuk math.isnan
 warnings.filterwarnings('ignore')
 
 # Download required NLTK data
@@ -27,6 +28,23 @@ try:
     nltk.download('punkt_tab')
 except:
     pass
+
+# --- Fungsi Helper Baru untuk Mengganti NaN ---
+def replace_nan_with_none(data):
+    """
+    Recursively replaces NaN float values with None in dictionaries and lists.
+    This makes the data JSON serializable.
+    """
+    if isinstance(data, dict):
+        return {k: replace_nan_with_none(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [replace_nan_with_none(elem) for elem in data]
+    elif isinstance(data, float) and math.isnan(data):
+        return None  # Replace NaN with None, which JSON converts to 'null'
+    else:
+        return data
+# --- Akhir Fungsi Helper Baru ---
+
 
 class CVJobMatcher:
     def __init__(self):
@@ -125,26 +143,23 @@ class CVJobMatcher:
             print(f"Error loading dataset: {e}")
             return False
     
-    def build_job_vectors(self):
+    def build_job_vectors(self, texts=None): # Tambahkan parameter texts opsional
         """
         Build TF-IDF vectors untuk dataset lowongan kerja
         """
-        if self.job_data is None:
-            print("Please load job dataset first")
-            return False
-        
-        try:
-            # Fit TF-IDF vectorizer pada job texts
+        if texts is None: # Jika tidak ada teks yang diberikan, gunakan job_data yang sudah ada
+            if self.job_data is None:
+                print("Please load job dataset first")
+                return False
             job_texts = self.job_data['processed_text'].tolist()
-            self.job_vectors = self.tfidf_vectorizer.fit_transform(job_texts)
-            
+            self.job_vectors = self.tfidf_vectorizer.fit_transform(job_texts) # Fit dan transform
             print(f"Built job vectors with shape: {self.job_vectors.shape}")
-            return True
+        else: # Jika teks diberikan (misalnya saat testing di main)
+            # Hanya transform, jangan fit ulang vectorizer yang sudah ada
+            return self.tfidf_vectorizer.transform(texts)
             
-        except Exception as e:
-            print(f"Error building job vectors: {e}")
-            return False
-    
+        return True
+            
     def create_neural_model(self):
         """
         Create neural network model untuk similarity scoring
@@ -203,7 +218,10 @@ class CVJobMatcher:
                 job_info['similarity_score'] = similarities[idx]
                 results.append(job_info.to_dict())
             
-            return results
+            # --- Perbaikan: Bersihkan NaN dari hasil sebelum dikembalikan ---
+            cleaned_results = replace_nan_with_none(results)
+            return cleaned_results
+            # --- Akhir Perbaikan ---
             
         except Exception as e:
             print(f"Error finding matching jobs: {e}")
@@ -317,7 +335,7 @@ def main():
     
     # Load job dataset
     print("Loading job dataset...")
-    if not matcher.load_job_dataset("ml/dataset/jobs_cleaned.csv"):
+    if not matcher.load_job_dataset("dataset/jobs_cleaned.csv"):
         print("Failed to load dataset")
         return
     
@@ -335,19 +353,19 @@ def main():
     print("\nTesting with sample CV...")
     
     # Extract text from CV PDF
-    cv_text = matcher.extract_text_from_pdf("CV.pdf")  #  path CV
+    cv_text = matcher.extract_text_from_pdf("CV.pdf")  # path CV
     
     # Find matching jobs
     matches = matcher.find_matching_jobs(cv_text, top_k=5)
     
     print(f"\nFound {len(matches)} matching jobs:")
     for i, match in enumerate(matches, 1):
-        print(f"\n{i}. {match['Title']} at {match['Company']}")
-        print(f"   Location: {match['Location']}, {match['City']}, {match['Region']}")
-        print(f"   Country: {match['Country']}")
-        print(f"   Similarity Score: {match['similarity_score']:.4f}")
-        print(f"   Description: {match['Job Description'][:100]}...")
-        print(f"   Link: {match['Link']}")
+        print(f"\n{i}. {match.get('Title', 'N/A')} at {match.get('Company', 'N/A')}")
+        print(f"   Location: {match.get('Location', 'N/A')}, {match.get('City', 'N/A')}, {match.get('Region', 'N/A')}")
+        print(f"   Country: {match.get('Country', 'N/A')}")
+        print(f"   Similarity Score: {match.get('similarity_score', 0.0):.4f}")
+        print(f"   Description: {match.get('Job Description', 'N/A')[:100]}...")
+        print(f"   Link: {match.get('Link', 'N/A')}")
     
     # Save model ke folder ml/
     print("\nSaving model...")
