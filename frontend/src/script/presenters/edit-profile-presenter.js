@@ -8,19 +8,26 @@ export default class EditProfilePresenter {
   constructor(appContainer) {
     this.app = appContainer;
     this.errorMessage = '';
-    this.currentUser = getCurrentUser();
+    // Hapus atau abaikan this.currentUser di constructor untuk menghindari race condition awal
+    // this.currentUser = getCurrentUser(); // <-- Ini bisa jadi penyebab race condition
   }
 
   init() {
+    // Ambil status user terbaru saat init() dipanggil
+    this.currentUser = getCurrentUser();
+    
     if (!this.currentUser) {
+      console.log('EditProfilePresenter: User not found, redirecting to login.');
       window.location.hash = '#/login';
       return;
     }
+    console.log('EditProfilePresenter: User found, rendering profile.');
     this.render();
   }
 
   render() {
-    this.currentUser = getCurrentUser(); // ambil ulang dari localStorage
+    // Pastikan currentUser selalu terbaru setiap kali render
+    this.currentUser = getCurrentUser();
     showEditProfile(
       this.app,
       this.currentUser,
@@ -33,8 +40,15 @@ export default class EditProfilePresenter {
   async handleEditProfile(data) {
     try {
       const updatedUser = await updateProfile(data.username, data.email);
-      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-      window.alert('Profile updated successfully!');
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser)); // Update localStorage
+      // Gunakan modal atau pesan di UI, hindari window.alert() di komponen SPAs
+      // window.alert('Profile updated successfully!'); 
+      if (this.app.querySelector('#general-error-message')) {
+        this.app.querySelector('#general-error-message').textContent = 'Profile updated successfully!';
+        this.app.querySelector('#general-error-message').classList.remove('d-none');
+        this.app.querySelector('#general-error-message').classList.remove('text-danger');
+        this.app.querySelector('#general-error-message').classList.add('text-success'); // Opsional: warna hijau untuk sukses
+      }
       this.errorMessage = ''; // reset error message kalau ada
       this.render();
     } catch (err) {
@@ -45,10 +59,15 @@ export default class EditProfilePresenter {
   
   async handleChangePassword(data) {
     try {
-      // panggil backend ganti password
       await changePassword(data.oldPassword, data.newPassword);
-
-      window.alert('Password changed successfully!');
+      // Gunakan modal atau pesan di UI, hindari window.alert() di komponen SPAs
+      // window.alert('Password changed successfully!');
+      if (this.app.querySelector('#general-error-message')) {
+        this.app.querySelector('#general-error-message').textContent = 'Password changed successfully!';
+        this.app.querySelector('#general-error-message').classList.remove('d-none');
+        this.app.querySelector('#general-error-message').classList.remove('text-danger');
+        this.app.querySelector('#general-error-message').classList.add('text-success'); // Opsional: warna hijau untuk sukses
+      }
       this.errorMessage = '';
       this.render();
     } catch (err) {
