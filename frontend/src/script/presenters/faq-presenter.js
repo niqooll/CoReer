@@ -1,4 +1,3 @@
-// src/script/presenters/faq-presenter.js
 import FaqView from '../views/faq-view.js';
 
 class FaqPresenter {
@@ -8,7 +7,6 @@ class FaqPresenter {
   }
 
   async init() {
-
     const faqData = [
       {
         question: "Apa itu CoReer?",
@@ -50,28 +48,29 @@ class FaqPresenter {
   }
 
   _bindEvents() {
-
     const faqItems = this.container.querySelectorAll('.faq-item');
     
     faqItems.forEach(item => {
-      const question = item.querySelector('.faq-question');
+      const question = item.querySelector('.faq-question button');
       const answer = item.querySelector('.faq-answer');
       const icon = item.querySelector('.faq-icon');
       
-      question.addEventListener('click', () => {
-        const isOpen = answer.style.display === 'block';
+      question.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = !answer.classList.contains('d-none');
 
+        // Close all other items
         faqItems.forEach(otherItem => {
           const otherAnswer = otherItem.querySelector('.faq-answer');
           const otherIcon = otherItem.querySelector('.faq-icon');
-          otherAnswer.style.display = 'none';
+          otherAnswer.classList.add('d-none');
           otherIcon.textContent = '+';
           otherItem.classList.remove('active');
         });
         
-
+        // Open current item if it wasn't open
         if (!isOpen) {
-          answer.style.display = 'block';
+          answer.classList.remove('d-none');
           icon.textContent = '−';
           item.classList.add('active');
         }
@@ -95,9 +94,9 @@ class FaqPresenter {
       const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
       
       if (question.includes(term) || answer.includes(term)) {
-        item.style.display = 'block';
+        item.classList.remove('d-none');
       } else {
-        item.style.display = 'none';
+        item.classList.add('d-none');
       }
     });
   }
