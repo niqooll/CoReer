@@ -32,7 +32,7 @@ class App {
   updateNavLinks() {
     const user = getCurrentUser();
     console.log('--- updateNavLinks called ---');
-    console.log('Current user status:', user); // Log status pengguna
+    console.log('Current user status:', user);
 
     const landingLink = document.getElementById('landing-link');
     const faqLink = document.getElementById('FAQ-link');
@@ -42,49 +42,40 @@ class App {
     const profileLinksMobile = document.getElementById('profile-links-mobile');
 
     if (user) {
-      // Jika user login:
-      // Tampilkan Home dan FAQ
+      // User logged in
       if (landingLink) landingLink.style.display = 'block';
       if (faqLink) faqLink.style.display = 'block';
-
-      // Sembunyikan Login dan Register
       if (loginLink) loginLink.style.display = 'none';
       if (registerLink) registerLink.style.display = 'none';
 
-      // Tampilkan bagian profil (Desktop atau Mobile akan diatur oleh Bootstrap d-none/d-lg-block)
-      // Mengatur display ke string kosong ("") akan menghapus properti style inline
-      // sehingga kelas responsif Bootstrap (d-none, d-lg-block, d-lg-none) mengambil alih.
+      // Show profile elements
       if (profileDropdownDesktop) {
-        profileDropdownDesktop.style.display = ''; // Biarkan Bootstrap memutuskan tampilan
-        console.log('Profile Desktop display reset to "" for Bootstrap control');
+        profileDropdownDesktop.classList.remove('d-none');
+        console.log('Profile Desktop: shown');
       }
       if (profileLinksMobile) {
-        profileLinksMobile.style.display = ''; // Biarkan Bootstrap memutuskan tampilan
-        console.log('Profile Mobile display reset to "" for Bootstrap control');
+        profileLinksMobile.classList.remove('d-none');
+        console.log('Profile Mobile: shown');
       }
     } else {
-      // Jika user belum login:
-      // Sembunyikan Home
+      // User not logged in
       if (landingLink) landingLink.style.display = 'none';
-
-      // Tampilkan FAQ, Login, dan Register
       if (faqLink) faqLink.style.display = 'block';
       if (loginLink) loginLink.style.display = 'block';
       if (registerLink) registerLink.style.display = 'block';
 
-      // Sembunyikan kedua bagian profil secara eksplisit
+      // Hide profile elements
       if (profileDropdownDesktop) {
-        profileDropdownDesktop.style.display = 'none';
-        console.log('Profile Desktop set to display: none (logged out)');
+        profileDropdownDesktop.classList.add('d-none');
+        console.log('Profile Desktop: hidden');
       }
       if (profileLinksMobile) {
-        profileLinksMobile.style.display = 'none';
-        console.log('Profile Mobile set to display: none (logged out)');
+        profileLinksMobile.classList.add('d-none');
+        console.log('Profile Mobile: hidden');
       }
     }
     console.log('--- End updateNavLinks ---');
   }
-
   async renderPage() {
     const user = getCurrentUser();
     const hash = window.location.hash || '#/';

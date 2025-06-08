@@ -66,6 +66,20 @@ html, body {
   margin-right: 2.5rem;
 }
 
+/* Ensure mobile profile links don't show on desktop */
+@media (min-width: 992px) {
+  #profile-links-mobile {
+    display: none !important;
+  }
+}
+
+/* Ensure desktop profile dropdown doesn't show on mobile */
+@media (max-width: 991.98px) {
+  #profile-dropdown-desktop {
+    display: none !important;
+  }
+}
+
 .logo-image {
   height: 60px;
   width: auto;

@@ -46,8 +46,10 @@
               <a class="nav-link" href="#/register">Register</a>
             </li>
 
-            <!-- Profile Dropdown for Desktop (Hidden by d-none, shown on large screens by d-lg-block) -->
-            <li class="nav-item dropdown d-none d-lg-block" id="profile-dropdown-desktop" style="display:none;">
+            <!-- Profile Dropdown for Desktop -->
+            <!-- d-none makes it hidden by default. Removed d-lg-block to allow JS to control display. -->
+            <!-- JavaScript will add/remove 'd-none' based on login status. -->
+            <li class="nav-item dropdown d-none" id="profile-dropdown-desktop">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -70,19 +72,20 @@
               </ul>
             </li>
 
-            <!-- Profile Links for Mobile (Hidden on large screens by d-lg-none) -->
-            <li class="nav-item d-lg-none" id="profile-links-mobile" style="display:none;">
-              <!-- "Profile" acts as a section header/link in mobile menu -->
-              <a class="nav-link fw-bold" href="#/edit-profile">Profile Settings</a>
-              <ul class="navbar-nav ps-3 w-100"> <!-- Nested ul to make sub-items; ps-3 for indent -->
-                <li class="nav-item"><a class="nav-link" href="#/edit-profile">Edit Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="#/history">History</a></li>
-                <li class="nav-item">
-                  <button class="nav-link text-danger w-100 text-start" id="logout-btn-mobile" type="button">
-                    Logout
-                  </button>
-                </li>
-              </ul>
+            <!-- Profile Links for Mobile -->
+            <li class="nav-item d-none" id="profile-links-mobile">
+              <div class="d-lg-none"> <!-- Wrap mobile content in d-lg-none -->
+                <a class="nav-link fw-bold" href="#/edit-profile">Profile Settings</a>
+                <ul class="navbar-nav ps-3 w-100">
+                  <li class="nav-item"><a class="nav-link" href="#/edit-profile">Edit Profile</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#/history">History</a></li>
+                  <li class="nav-item">
+                    <button class="nav-link text-danger w-100 text-start" id="logout-btn-mobile" type="button">
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              </div>
             </li>
           </ul>
         </div>
