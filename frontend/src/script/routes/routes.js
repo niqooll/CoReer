@@ -3,6 +3,7 @@ import LandingPresenter from '../presenters/landing-presenter.js';
 import LoginPresenter from '../presenters/login-presenter.js';
 import RegisterPresenter from '../presenters/register-presenter.js';
 import MainPresenter from '../presenters/main-presenter.js';
+import EditProfilePresenter from '../presenters/edit-profile-presenter.js';
 
 const app = document.getElementById('app');
 
@@ -12,6 +13,7 @@ const routes = {
   '/login': new LoginPresenter(app),
   '/register': new RegisterPresenter(app),
   '/main': new MainPresenter(app),
+  '/edit-profile': new EditProfilePresenter(app),
 };
 
 export default routes;

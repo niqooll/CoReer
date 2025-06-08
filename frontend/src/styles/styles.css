@@ -137,3 +137,30 @@ footer.custom-footer {
 footer.custom-footer p {
   color: white;
 }
+
+/* edit profile custom */
+.list-group-item.active {
+  background-color: var(--normal);
+  border-color: var(--normal);
+  color: white;
+}
+
+.list-group-item {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.list-group-item:hover:not(.active) {
+  background-color: var(--normal-hover);
+  color: white;
+}
+
+.col-md-3 {
+  border-right: 1px solid var(--normal); /* bisa ganti warna sesuai var kamu */
+  padding-right: 1.5rem; /* beri jarak agar konten tidak menempel garis */
+}
+
+/* Untuk kolom kanan beri sedikit padding kiri */
+.col-md-9 {
+  padding-left: 1.5rem;
+}

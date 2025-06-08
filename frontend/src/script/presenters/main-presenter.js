@@ -1,5 +1,4 @@
 // src/script/presenter/main-presenter.js
-// src/script/presenter/main-presenter.js
 import * as MainView from '../views/main-view.js';
 
 export default class MainPresenter {

@@ -1,4 +1,6 @@
 // src/script/views/register-view.js
+import { bindFormValidation, isValidEmail, isValidPassword, isNotEmpty } from '../utils/form-validation.js';
+
 export function renderRegister(errorMessage = '') {
   return `
     <div class="container" style="max-width: 450px; margin: 3rem auto;">
@@ -15,6 +17,7 @@ export function renderRegister(errorMessage = '') {
               placeholder="Choose a username"
               required
             />
+            <small id="username-error" class="text-danger" style="display:none;"></small>
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
@@ -51,98 +54,37 @@ export function renderRegister(errorMessage = '') {
   `;
 }
 
-export function bindRegisterFormSubmit(callback) {
-  const form = document.getElementById('register-form');
-  if (!form) return;
-
-  const emailInput = form.email;
-  const emailError = document.getElementById('email-error');
-  const passwordInput = form.password;
-  const passwordError = document.getElementById('password-error');
-
-  // Validasi realtime email
-  emailInput.addEventListener('input', () => {
-    const emailVal = emailInput.value.trim();
-    if (!emailVal.includes('@')) {
-      emailError.textContent = 'Email harus mengandung karakter "@"';
-      emailError.style.display = 'block';
-    } else {
-      emailError.textContent = '';
-      emailError.style.display = 'none';
-    }
-  });
-
-  // Validasi realtime password
-  passwordInput.addEventListener('input', () => {
-    const pwdVal = passwordInput.value;
-
-    if (!pwdVal) {
-      passwordError.textContent = 'Password tidak boleh kosong.';
-      passwordError.style.display = 'block';
-    } else if (pwdVal.length < 8) {
-      passwordError.textContent = 'Password harus minimal 8 karakter.';
-      passwordError.style.display = 'block';
-    } else {
-      passwordError.textContent = '';
-      passwordError.style.display = 'none';
-    }
-  });
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    // Reset error
-    emailError.style.display = 'none';
-    emailError.textContent = '';
-    passwordError.style.display = 'none';
-    passwordError.textContent = '';
-
-    const username = form.username.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-
-    let valid = true;
-
-    if (!username) {
-      alert('Username tidak boleh kosong.');
-      valid = false;
-    }
-
-    if (!email) {
-      emailError.textContent = 'Email tidak boleh kosong.';
-      emailError.style.display = 'block';
-      valid = false;
-    } else if (!email.includes('@')) {
-      emailError.textContent = 'Email harus mengandung karakter "@"';
-      emailError.style.display = 'block';
-      valid = false;
-    }
-
-    if (!password) {
-      passwordError.textContent = 'Password tidak boleh kosong.';
-      passwordError.style.display = 'block';
-      valid = false;
-    } else if (password.length < 8) {
-      passwordError.textContent = 'Password harus minimal 8 karakter.';
-      passwordError.style.display = 'block';
-      valid = false;
-    }
-
-    if (!valid) {
-      if (emailError.style.display === 'block') {
-        emailInput.focus();
-      } else if (passwordError.style.display === 'block') {
-        passwordInput.focus();
-      }
-      return;
-    }
-
-    const data = { username, email, password };
-    callback(data);
+export function bindRegisterFormSubmit(onSubmit) {
+  bindFormValidation({
+    formId: 'register-form',
+    fields: {
+      username: {
+        errorId: 'username-error',
+        validators: [
+          { validator: isNotEmpty, message: 'Username tidak boleh kosong.' },
+        ],
+      },
+      email: {
+        errorId: 'email-error',
+        validators: [
+          { validator: isNotEmpty, message: 'Email tidak boleh kosong.' },
+          { validator: isValidEmail, message: 'Format email tidak valid.' },
+        ],
+      },
+      password: {
+        errorId: 'password-error',
+        validators: [
+          { validator: isNotEmpty, message: 'Password tidak boleh kosong.' },
+          { validator: isValidPassword, message: 'Password harus minimal 8 karakter.' },
+        ],
+      },
+    },
+    onSubmit,
   });
 }
 
 export function showSuccessMessage(message) {
+  // Bebas: bisa modal, toast, atau alert
   alert(message);
 }
 

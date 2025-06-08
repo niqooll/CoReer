@@ -19,6 +19,11 @@ const init = async () => {
 
   server.route(routes);
 
+  console.log('Routes terdaftar:');
+  server.table().forEach(route => {
+    console.log(`${route.method.toUpperCase()} ${route.path}`);
+  });
+
   await server.start();
   console.log(`🚀 Server running at: ${server.info.uri}`);
 };

@@ -1,4 +1,6 @@
 // src/script/views/login-view.js
+import { bindFormValidation, isValidEmail, isValidPassword, isNotEmpty } from '../utils/form-validation.js';
+
 export function showLogin(container, errorMessage = '', onSubmit) {
   container.innerHTML = `
     <div class="container" style="max-width: 450px; margin: 3rem auto;">
@@ -39,84 +41,24 @@ export function showLogin(container, errorMessage = '', onSubmit) {
     </div>
   `;
 
-  const form = container.querySelector('#login-form');
-  const emailInput = form.email;
-  const emailError = container.querySelector('#email-error');
-  const passwordInput = form.password;
-  const passwordError = container.querySelector('#password-error');
-
-  // Validasi realtime untuk email
-  emailInput.addEventListener('input', () => {
-    const emailVal = emailInput.value.trim();
-    if (!emailVal.includes('@')) {
-      emailError.textContent = 'Email harus mengandung karakter "@"';
-      emailError.style.display = 'block';
-    } else {
-      emailError.textContent = '';
-      emailError.style.display = 'none';
-    }
-  });
-
-  // Validasi realtime untuk password
-  passwordInput.addEventListener('input', () => {
-    const pwdVal = passwordInput.value;
-
-    if (!pwdVal) {
-      passwordError.textContent = 'Password tidak boleh kosong.';
-      passwordError.style.display = 'block';
-    } else if (pwdVal.length < 8) {
-      passwordError.textContent = 'Password harus minimal 8 karakter.';
-      passwordError.style.display = 'block';
-    } else {
-      passwordError.textContent = '';
-      passwordError.style.display = 'none';
-    }
-  });
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    // Reset semua pesan error
-    emailError.style.display = 'none';
-    emailError.textContent = '';
-    passwordError.style.display = 'none';
-    passwordError.textContent = '';
-
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-
-    let valid = true;
-
-    if (!email) {
-      emailError.textContent = 'Email tidak boleh kosong.';
-      emailError.style.display = 'block';
-      valid = false;
-    } else if (!email.includes('@')) {
-      emailError.textContent = 'Email harus mengandung karakter "@"';
-      emailError.style.display = 'block';
-      valid = false;
-    }
-
-    if (!password) {
-      passwordError.textContent = 'Password tidak boleh kosong.';
-      passwordError.style.display = 'block';
-      valid = false;
-    } else if (password.length < 8) {
-      passwordError.textContent = 'Password harus minimal 8 karakter.';
-      passwordError.style.display = 'block';
-      valid = false;
-    }
-
-    if (!valid) {
-      if (emailError.style.display === 'block') {
-        emailInput.focus();
-      } else if (passwordError.style.display === 'block') {
-        passwordInput.focus();
-      }
-      return;
-    }
-
-    const data = { email, password };
-    onSubmit(data);
+  bindFormValidation({
+    formId: 'login-form',
+    fields: {
+      email: {
+        errorId: 'email-error',
+        validators: [
+          { validator: isNotEmpty, message: 'Email tidak boleh kosong.' },
+          { validator: isValidEmail, message: 'Format email tidak valid.' },
+        ],
+      },
+      password: {
+        errorId: 'password-error',
+        validators: [
+          { validator: isNotEmpty, message: 'Password tidak boleh kosong.' },
+          { validator: isValidPassword, message: 'Password harus minimal 8 karakter.' },
+        ],
+      },
+    },
+    onSubmit,
   });
 }

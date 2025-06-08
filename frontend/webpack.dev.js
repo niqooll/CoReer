@@ -22,7 +22,7 @@ module.exports = merge(common, {
       },
       {
         directory: path.resolve(__dirname, 'src/public'),
-        publicPath: '/icons', // ini supaya bisa diakses di /icons/...
+        publicPath: '/icons',
         watch: true,
       },
     ],
