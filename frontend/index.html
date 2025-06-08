@@ -1,17 +1,23 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>CoReer SPA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Bootstrap CSS (assuming local installation via Node.js/bundler) -->
+  <!-- Ensure your bundler correctly includes Bootstrap's CSS from node_modules -->
+  <!-- <link href="path/to/your/local/bootstrap.min.css" rel="stylesheet"> -->
+  <!-- Link to your custom CSS file -->
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
   <header>
     <nav class="navbar navbar-expand-lg custom-navbar">
       <div class="container">
+        <!-- Brand/Logo -->
         <a class="navbar-brand me-4" href="#/">CoReer</a>
 
+        <!-- Mobile Menu Toggler (Hamburger Button) -->
         <button
           class="navbar-toggler"
           type="button"
@@ -24,10 +30,14 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Navbar Links and Profile Dropdown -->
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto me-4 gap-3" id="nav-links">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-3" id="nav-links">
             <li class="nav-item" id="landing-link">
               <a class="nav-link" href="#/landing">Home</a>
+            </li>
+            <li class="nav-item" id="FAQ-link">
+              <a class="nav-link" href="#/FAQ">FAQ</a>
             </li>
             <li class="nav-item" id="login-link">
               <a class="nav-link" href="#/login">Login</a>
@@ -36,24 +46,39 @@
               <a class="nav-link" href="#/register">Register</a>
             </li>
 
-            <!-- Profile dropdown -->
-            <li class="nav-item dropdown" id="profile-dropdown" style="display:none;">
+            <!-- Profile Dropdown for Desktop (Hidden by d-none, shown on large screens by d-lg-block) -->
+            <li class="nav-item dropdown d-none d-lg-block" id="profile-dropdown-desktop" style="display:none;">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
-                id="profileDropdownMenuLink"
+                id="profileDropdownMenuLinkDesktop"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
                 Profile
               </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdownMenuLink">
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdownMenuLinkDesktop">
                 <li><a class="dropdown-item" href="#/edit-profile">Edit Profile</a></li>
                 <li><a class="dropdown-item" href="#/history">History</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
-                  <button class="dropdown-item text-danger" id="logout-btn" type="button">
+                  <button class="dropdown-item text-danger" id="logout-btn-desktop" type="button">
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </li>
+
+            <!-- Profile Links for Mobile (Hidden on large screens by d-lg-none) -->
+            <li class="nav-item d-lg-none" id="profile-links-mobile" style="display:none;">
+              <!-- "Profile" acts as a section header/link in mobile menu -->
+              <a class="nav-link fw-bold" href="#/edit-profile">Profile Settings</a>
+              <ul class="navbar-nav ps-3 w-100"> <!-- Nested ul to make sub-items; ps-3 for indent -->
+                <li class="nav-item"><a class="nav-link" href="#/edit-profile">Edit Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="#/history">History</a></li>
+                <li class="nav-item">
+                  <button class="nav-link text-danger w-100 text-start" id="logout-btn-mobile" type="button">
                     Logout
                   </button>
                 </li>
@@ -67,12 +92,13 @@
 
   <div id="app"></div>
 
+  <!-- Script utama aplikasi Anda, diasumsikan sudah termasuk Bootstrap JS -->
   <script src="dist/bundle.js"></script>
 
   <footer class="custom-footer py-3 mt-4">
     <div class="container text-center">
       <p class="mb-0 fw-semibold">&copy; 2025 CoReer. All rights reserved.</p>
-    </div>  
+    </div>
   </footer>
 </body>
 </html>

@@ -6,18 +6,21 @@ import { applyViewTransition } from './utils/index.js';
 class App {
   constructor({ appContainerId = 'app' } = {}) {
     this.appContainer = document.getElementById(appContainerId);
-    this.publicRoutes = ['/', '/login', '/register'];
+    // Tambahkan '/FAQ' ke rute publik agar bisa diakses tanpa login
+    this.publicRoutes = ['/', '/login', '/register', '/FAQ'];
     this._bindEvents();
   }
 
   _bindEvents() {
-    document.querySelectorAll('a.nav-link.dropdown-toggle').forEach(dropdownToggle => {
-      dropdownToggle.addEventListener('click', e => e.preventDefault());
-    });
+    // Pastikan listener logout menangani kedua tombol (desktop dan mobile)
+    const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
+    const logoutBtnMobile = document.getElementById('logout-btn-mobile');
 
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => this.logout());
+    if (logoutBtnDesktop) {
+      logoutBtnDesktop.addEventListener('click', () => this.logout());
+    }
+    if (logoutBtnMobile) {
+      logoutBtnMobile.addEventListener('click', () => this.logout());
     }
 
     window.addEventListener('hashchange', () => {
@@ -28,23 +31,58 @@ class App {
 
   updateNavLinks() {
     const user = getCurrentUser();
+    console.log('--- updateNavLinks called ---');
+    console.log('Current user status:', user); // Log status pengguna
 
+    const landingLink = document.getElementById('landing-link');
+    const faqLink = document.getElementById('FAQ-link');
     const loginLink = document.getElementById('login-link');
     const registerLink = document.getElementById('register-link');
-    const profileDropdown = document.getElementById('profile-dropdown');
-    const landingLink = document.getElementById('landing-link');
+    const profileDropdownDesktop = document.getElementById('profile-dropdown-desktop');
+    const profileLinksMobile = document.getElementById('profile-links-mobile');
 
     if (user) {
+      // Jika user login:
+      // Tampilkan Home dan FAQ
+      if (landingLink) landingLink.style.display = 'block';
+      if (faqLink) faqLink.style.display = 'block';
+
+      // Sembunyikan Login dan Register
       if (loginLink) loginLink.style.display = 'none';
       if (registerLink) registerLink.style.display = 'none';
-      if (profileDropdown) profileDropdown.style.display = 'block';
-      if (landingLink) landingLink.style.display = 'block';
+
+      // Tampilkan bagian profil (Desktop atau Mobile akan diatur oleh Bootstrap d-none/d-lg-block)
+      // Mengatur display ke string kosong ("") akan menghapus properti style inline
+      // sehingga kelas responsif Bootstrap (d-none, d-lg-block, d-lg-none) mengambil alih.
+      if (profileDropdownDesktop) {
+        profileDropdownDesktop.style.display = ''; // Biarkan Bootstrap memutuskan tampilan
+        console.log('Profile Desktop display reset to "" for Bootstrap control');
+      }
+      if (profileLinksMobile) {
+        profileLinksMobile.style.display = ''; // Biarkan Bootstrap memutuskan tampilan
+        console.log('Profile Mobile display reset to "" for Bootstrap control');
+      }
     } else {
+      // Jika user belum login:
+      // Sembunyikan Home
+      if (landingLink) landingLink.style.display = 'none';
+
+      // Tampilkan FAQ, Login, dan Register
+      if (faqLink) faqLink.style.display = 'block';
       if (loginLink) loginLink.style.display = 'block';
       if (registerLink) registerLink.style.display = 'block';
-      if (profileDropdown) profileDropdown.style.display = 'none';
-      if (landingLink) landingLink.style.display = 'none';
+
+      // Sembunyikan kedua bagian profil secara eksplisit
+      if (profileDropdownDesktop) {
+        profileDropdownDesktop.style.display = 'none';
+        console.log('Profile Desktop set to display: none (logged out)');
+      }
+      if (profileLinksMobile) {
+        profileLinksMobile.style.display = 'none';
+        console.log('Profile Mobile set to display: none (logged out)');
+      }
     }
+    console.log('--- End updateNavLinks ---');
   }
 
   async renderPage() {
@@ -52,6 +90,7 @@ class App {
     const hash = window.location.hash || '#/';
     const path = hash.slice(1);
 
+    // Redirect ke halaman login jika user belum login dan mencoba mengakses rute non-publik
     if (!user && !this.publicRoutes.includes(path)) {
       window.location.hash = '#/login';
       return;
