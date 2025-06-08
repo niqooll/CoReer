@@ -43,7 +43,7 @@ export function renderRegister(errorMessage = '') {
             />
             <small id="password-error" class="text-danger" style="display:none;"></small>
           </div>
-          <button type="submit" class="btn btn-success w-100">Register</button>
+          <button type="submit" class="btn btn-primary w-100">Register</button>
         </form>
         <p class="text-danger mt-1 text-center">${errorMessage}</p>
         <div class="mt-1 text-center">
