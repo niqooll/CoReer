@@ -3,14 +3,16 @@
 // Helper: show error message
 export function setError(inputEl, errorEl, message) {
   errorEl.textContent = message;
-  errorEl.style.display = 'block';
+  // UBAH INI: Hapus kelas d-none agar pesan error terlihat
+  errorEl.classList.remove('d-none');
   inputEl.classList.add('is-invalid');
 }
 
 // Helper: clear error message
 export function clearError(inputEl, errorEl) {
   errorEl.textContent = '';
-  errorEl.style.display = 'none';
+  // UBAH INI: Tambahkan kembali kelas d-none untuk menyembunyikan pesan error
+  errorEl.classList.add('d-none');
   inputEl.classList.remove('is-invalid');
 }
 
@@ -49,24 +51,24 @@ export function isStrongPassword(password) {
 // Bind form validation based on config
 // config example:
 // {
-//   formId: 'login-form',
-//   fields: {
-//     email: {
-//       errorId: 'email-error',
-//       validators: [
-//         { validator: isNotEmpty, message: 'Email tidak boleh kosong.' },
-//         { validator: isValidEmail, message: 'Format email tidak valid.' }
-//       ]
-//     },
-//     password: {
-//       errorId: 'password-error',
-//       validators: [
-//         { validator: isNotEmpty, message: 'Password tidak boleh kosong.' },
-//         { validator: isValidPassword, message: 'Password harus minimal 8 karakter.' }
-//       ]
-//     }
-//   },
-//   onSubmit: (formData) => { ... }
+//   formId: 'login-form',
+//   fields: {
+//     email: {
+//       errorId: 'email-error',
+//       validators: [
+//         { validator: isNotEmpty, message: 'Email tidak boleh kosong.' },
+//         { validator: isValidEmail, message: 'Format email tidak valid.' }
+//       ]
+//     },
+//     password: {
+//       errorId: 'password-error',
+//       validators: [
+//         { validator: isNotEmpty, message: 'Password tidak boleh kosong.' },
+//         { validator: isValidPassword, message: 'Password harus minimal 8 karakter.' }
+//       ]
+//     }
+//   },
+//   onSubmit: (formData) => { ... }
 // }
 
 export function bindFormValidation({ formId, fields, onSubmit }) {

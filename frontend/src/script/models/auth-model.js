@@ -75,3 +75,36 @@ export function isLoggedIn() {
 export function logout() {
   localStorage.removeItem('currentUser');
 }
+
+// --- FUNGSI BARU: Verifikasi Token ---
+export async function verifyToken() {
+  const user = getCurrentUser();
+  if (!user || !user.token) {
+    return false; // Tidak ada pengguna atau token, berarti tidak login
+  }
+
+  try {
+    // Coba panggil endpoint yang dilindungi, misalnya /profile
+    const res = await fetch(`${API_BASE}/profile`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`, // Kirim token untuk verifikasi
+      },
+    });
+
+    if (!res.ok) {
+      // Jika respons bukan OK (misalnya 401 Unauthorized dari backend)
+      throw new Error('Verifikasi token gagal');
+    }
+
+    // Jika respons OK, token masih valid
+    return true;
+
+  } catch (error) {
+    console.error('Verifikasi token gagal:', error.message);
+    // Hapus token jika ada kesalahan (expired, invalid, dll.)
+    logout(); // Panggil fungsi logout yang sudah ada
+    return false;
+  }
+}

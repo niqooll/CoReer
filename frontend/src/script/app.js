@@ -1,84 +1,55 @@
-// Import fungsionalitas utama aplikasi dan model autentikasi.
-import { getCurrentUser, logout as performLogout } from './models/auth-model.js';
+import { getCurrentUser, logout as performLogout, verifyToken } from './models/auth-model.js';
 import { applyViewTransition } from './utils/index.js';
 
-/**
- * Kelas utama aplikasi yang mengelola routing, navigasi, dan rendering halaman.
- */
 class App {
-  /**
-   * Konstruktor untuk kelas App.
-   * @param {object} options - Opsi konfigurasi aplikasi.
-   * @param {string} options.appContainerId - ID elemen DOM tempat aplikasi akan dirender.
-   */
   constructor({ appContainerId = 'app' } = {}) {
     this.appContainer = document.getElementById(appContainerId);
-    // Definisi rute publik yang dapat diakses tanpa autentikasi.
     this.publicRoutes = ['/', '/login', '/register', '/FAQ'];
-    // Mengikat event listener penting ke DOM.
     this._bindEvents();
 
-    /**
-     * Objek yang memetakan hash URL ke modul presenter yang sesuai.
-     * Menggunakan dynamic import (import()) untuk lazy loading,
-     * yang berarti kode presenter hanya dimuat saat rute tersebut diakses.
-     */
     this.routePresenters = {
-      // Rute utama dan landing page
       '/': import('./presenters/landing-presenter.js').then(m => m.default),
       '/landing': import('./presenters/landing-presenter.js').then(m => m.default),
-      // Rute autentikasi
       '/login': import('./presenters/login-presenter.js').then(m => m.default),
       '/register': import('./presenters/register-presenter.js').then(m => m.default),
-      // Rute informasi
       '/FAQ': import('./presenters/faq-presenter.js').then(m => m.default),
-      // Rute Main Analyze
       '/main': import('./presenters/main-presenter.js').then(m => m.default),
-      // Rute profil pengguna
       '/edit-profile': import('./presenters/edit-profile-presenter.js').then(m => m.default),
-      // Rute riwayat analisis CV (baru ditambahkan)
       '/history': import('./presenters/history-presenter.js').then(m => m.default),
-      // Tambahkan rute lain di sini jika diperlukan
     };
   }
 
-  /**
-   * Mengikat event listener ke elemen-elemen DOM.
-   * Ini termasuk tombol logout dan event hashchange/DOMContentLoaded.
-   */
   _bindEvents() {
-    // Mendapatkan referensi tombol logout untuk desktop dan mobile
     const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
     const logoutBtnMobile = document.getElementById('logout-btn-mobile');
 
-    // Menambahkan event listener click ke tombol logout (jika ada)
     if (logoutBtnDesktop) {
-      logoutBtnDesktop.addEventListener('click', () => this.logout());
+      logoutBtnDesktop.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.confirmLogout();
+      });
     }
     if (logoutBtnMobile) {
-      logoutBtnMobile.addEventListener('click', () => this.logout());
+      logoutBtnMobile.addEventListener('click', (event) => {
+        event.preventDefault();
+        this.confirmLogout();
+      });
     }
 
-    // Menambahkan event listener untuk perubahan hash di URL (navigasi SPA)
     window.addEventListener('hashchange', () => {
-      this.updateNavLinks(); // Perbarui tampilan link navigasi
-      this.renderPage(); // Render halaman yang sesuai dengan hash baru
+      this.updateNavLinks();
+      this.renderPage();
     });
 
-    // Menambahkan event listener saat DOM selesai dimuat untuk inisialisasi awal aplikasi
     window.addEventListener('DOMContentLoaded', () => {
-      this.updateNavLinks(); // Inisialisasi tampilan link navigasi
-      this.renderPage(); // Render halaman awal aplikasi
+      this.updateNavLinks();
+      this.renderPage();
     });
   }
 
-  /**
-   * Memperbarui visibilitas link navigasi di navbar berdasarkan status login pengguna.
-   */
   updateNavLinks() {
-    const user = getCurrentUser(); // Mendapatkan objek pengguna yang sedang login (jika ada)
+    const user = getCurrentUser();
 
-    // Mendapatkan referensi elemen link navigasi
     const landingLink = document.getElementById('landing-link');
     const faqLink = document.getElementById('FAQ-link');
     const loginLink = document.getElementById('login-link');
@@ -87,9 +58,7 @@ class App {
     const profileLinksMobile = document.getElementById('profile-links-mobile');
     const historyLink = document.getElementById('history-link');
 
-    // Logika untuk menampilkan/menyembunyikan link berdasarkan status login
     if (user) {
-      // Jika pengguna login:
       if (landingLink) landingLink.style.display = 'block';
       if (faqLink) faqLink.style.display = 'block';
       if (historyLink) historyLink.style.display = 'block';
@@ -104,7 +73,6 @@ class App {
         profileLinksMobile.classList.remove('d-none');
       }
     } else {
-      // Jika pengguna belum login:
       if (landingLink) landingLink.style.display = 'none';
       if (historyLink) historyLink.style.display = 'none';
 
@@ -121,17 +89,22 @@ class App {
     }
   }
 
-  /**
-   * Merender halaman yang sesuai berdasarkan hash URL.
-   * Termasuk logika untuk pengalihan (redirect) dan penanganan presenter.
-   */
   async renderPage() {
-    const user = getCurrentUser();
+    let user = getCurrentUser();
     const hash = window.location.hash || '#/';
     const path = hash.slice(1);
 
-    // Logika pengalihan: Jika pengguna tidak login dan mencoba mengakses rute non-publik,
-    // alihkan ke halaman login.
+    if (user && user.token) {
+      const isTokenValid = await verifyToken();
+      if (!isTokenValid) {
+        console.warn('Token kedaluwarsa atau tidak valid. Memaksa logout dan mengarahkan ke halaman login.');
+        performLogout();
+        user = null;
+        window.location.hash = '#/login';
+        return;
+      }
+    }
+
     if (!user && !this.publicRoutes.includes(path)) {
       window.location.hash = '#/login';
       return;
@@ -147,9 +120,8 @@ class App {
         return;
       }
     } catch (error) {
-      // Tangani error jika gagal memuat modul presenter (misalnya, masalah jaringan)
-      console.error(`Failed to load presenter for path: ${path}`, error);
-      this.appContainer.innerHTML = '<h1>Error loading page</h1>';
+      console.error(`Gagal memuat presenter untuk path: ${path}`, error);
+      this.appContainer.innerHTML = '<h1>Gagal memuat halaman</h1>';
       return;
     }
 
@@ -162,25 +134,24 @@ class App {
       } else if (PresenterModule && typeof PresenterModule.init === 'function') {
         await PresenterModule.init(this.appContainer);
       } else {
-        this.appContainer.innerHTML = '<h1>Presenter Invalid</h1>';
+        this.appContainer.innerHTML = '<h1>Presenter Tidak Valid</h1>';
       }
     });
   }
 
-  /**
-   * Menangani proses logout pengguna.
-   * Menghapus sesi pengguna, memperbarui navigasi, dan mengarahkan ke halaman utama.
-   */
+  confirmLogout() {
+    const isConfirmed = window.confirm('Apakah Anda yakin ingin keluar dari akun?');
+    if (isConfirmed) {
+      this.logout();
+    }
+  }
+
   logout() {
     performLogout();
     this.updateNavLinks();
     window.location.hash = '#/';
   }
 
-  /**
-   * Metode inisialisasi aplikasi secara keseluruhan.
-   * Dipanggil sekali saat aplikasi pertama kali dimuat.
-   */
   async init() {
     this.updateNavLinks();
     await this.renderPage();
