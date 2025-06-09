@@ -1,60 +1,66 @@
 // src/script/views/register-view.js
 import { bindFormValidation, isValidEmail, isValidPassword, isNotEmpty } from '../utils/form-validation.js';
 
-export function renderRegister(errorMessage = '') {
-  return `
-    <div class="container" style="max-width: 450px; margin: 3rem auto;">
-      <div class="card p-4 shadow-sm">
-        <h3 class="card-title text-center mb-4">Create a CoReer Account</h3>
-        <form id="register-form" novalidate>
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              class="form-control"
-              placeholder="Choose a username"
-              required
-            />
-            <small id="username-error" class="text-danger" style="display:none;"></small>
+export function showRegister(container, errorMessage = '', onSubmit) {
+  container.innerHTML = `
+    <section class="login-register-section py-3 min-vh-75 d-flex align-items-center position-relative overflow-hidden login-gradient-bg">
+      <div class="login-blob-bg blob-one"></div>
+      <div class="login-blob-bg blob-two"></div>
+      <div class="container position-relative z-index-1">
+        <div class="row justify-content-center">
+          <div class="col-lg-5 col-md-7 col-sm-9">
+            <div class="card p-4 shadow-lg border-0 rounded-4 animate-fade-in">
+              <h3 class="card-title text-center mb-4 fw-bold text-dark-blue">Buat Akun CoReer</h3>
+              <form id="register-form" novalidate>
+                <div class="mb-3">
+                  <label for="username" class="form-label visually-hidden">Username</label>
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control form-control-lg"
+                    placeholder="Masukkan username"
+                    required
+                  />
+                  <small id="username-error" class="text-danger mt-1" style="display:none;"></small>
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label visually-hidden">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-control form-control-lg"
+                    placeholder="Masukkan email Anda"
+                    required
+                  />
+                  <small id="email-error" class="text-danger mt-1" style="display:none;"></small>
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label visually-hidden">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control form-control-lg"
+                    placeholder="Buat password"
+                    required
+                  />
+                  <small id="password-error" class="text-danger mt-1" style="display:none;"></small>
+                </div>
+                ${errorMessage ? `<p class="text-danger mt-3 text-center animate-fade-in">${errorMessage}</p>` : ''}
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 custom-btn-auth">Register</button>
+              </form>
+              <div class="mt-4 text-center">
+                Sudah punya akun? <a href="#/login" class="text-brand-primary fw-semibold">Login di sini</a>
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              class="form-control"
-              placeholder="Enter your email"
-              required
-            />
-            <small id="email-error" class="text-danger" style="display:none;"></small>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              class="form-control"
-              placeholder="Create a password"
-              required
-            />
-            <small id="password-error" class="text-danger" style="display:none;"></small>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Register</button>
-        </form>
-        <p class="text-danger mt-1 text-center">${errorMessage}</p>
-        <div class="mt-1 text-center">
-          Already have an account? <a href="#/login">Login here</a>
         </div>
       </div>
-    </div>
+    </section>
   `;
-}
 
-export function bindRegisterFormSubmit(onSubmit) {
   bindFormValidation({
     formId: 'register-form',
     fields: {
@@ -84,8 +90,7 @@ export function bindRegisterFormSubmit(onSubmit) {
 }
 
 export function showSuccessMessage(message) {
-  // Bebas: bisa modal, toast, atau alert
-  alert(message);
+  alert(message); // atau bisa ganti dengan toast/modal
 }
 
 export function redirectToLogin() {

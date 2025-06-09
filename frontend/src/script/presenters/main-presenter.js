@@ -1,7 +1,7 @@
 // src/script/presenter/main-presenter.js
 import * as MainView from '../views/main-view.js';
-import { predictCV } from '../models/predict-model.js';
-// import { logoutUser } from '../models/auth-model.js'; // Ini tidak lagi diperlukan di sini
+import { predictCV, saveAnalysisHistory } from '../models/predict-model.js'; // Pastikan saveAnalysisHistory diimpor jika digunakan
+import { getCurrentUser, logout } from '../models/auth-model.js'; // Import logout
 
 export default class MainPresenter {
     constructor(appContainer) {
@@ -15,24 +15,12 @@ export default class MainPresenter {
     }
 
     render() {
-        // Panggil renderMainPage tanpa parameter onLogout
-        this.app.innerHTML = MainView.renderMainPage(this.errorMessage);
-
-        // Hapus baris ini karena logout sudah ditangani di navbar
-        // MainView.bindLogoutButton(this.handleLogout.bind(this));
-
+        const user = getCurrentUser();
+        this.app.innerHTML = MainView.renderMainPage(user, this.errorMessage);
         MainView.bindUploadAndPreview(this.handleFileSelected.bind(this));
         MainView.bindAnalyzeButton(this.handleAnalyze.bind(this));
-
         MainView.hideAnalyzeLoading(false);
     }
-
-    // Fungsi handleLogout dihapus dari sini karena sudah ditangani di navbar
-    // handleLogout() {
-    //     logoutUser();
-    //     history.pushState({}, '', '/');
-    //     window.dispatchEvent(new PopStateEvent('popstate'));
-    // }
 
     handleFileSelected(file) {
         this.selectedFile = file;
@@ -55,6 +43,12 @@ export default class MainPresenter {
                 if (result.data && result.data.length > 0) {
                     MainView.showPredictionResult(`<p class="text-success text-center m-0 py-3">Analysis complete. Found ${result.data.length} matching jobs.</p>`);
                     MainView.displayMatchingJobs(result.data);
+
+                    // Pastikan Anda menyimpan riwayat analisis jika diperlukan di sini
+                    // Contoh:
+                    // await saveAnalysisHistory(this.selectedFile.name, result.data);
+                    // console.log('Analysis history saved!');
+
                 } else {
                     MainView.showPredictionResult('<p class="text-info text-center m-0 py-3">Analysis complete. No matching jobs found.</p>');
                     MainView.displayMatchingJobs([]);
@@ -67,6 +61,16 @@ export default class MainPresenter {
             console.error('Error during CV analysis:', error);
             MainView.showPredictionResult(`<p class="text-danger text-center m-0 py-3">An error occurred: ${error.message || 'Please try again.'}</p>`);
             MainView.displayMatchingJobs([]);
+
+            // --- Tambahkan logika ini ---
+            // Cek jika error adalah karena token expired dan arahkan ke login
+            if (error.message.includes('Session expired') || error.message.includes('Unauthorized')) {
+                alert('Sesi Anda telah berakhir. Silakan login kembali untuk melanjutkan.');
+                window.location.hash = '#/login';
+                return;
+            }
+            // --- Akhir logika tambahan ---
+
         } finally {
             MainView.hideAnalyzeLoading(this.selectedFile !== null);
         }

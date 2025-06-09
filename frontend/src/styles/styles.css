@@ -1,3 +1,5 @@
+/* --- CSS Utama Anda --- */
+
 :root {
   --brand-primary: #3CA9C3;
   --brand-secondary: #F0F8FF;
@@ -14,17 +16,30 @@
   --sec-normal: var(--brand-secondary);
 }
 
+/* GLOBAL RESET - Lebih agresif */
+* {
+    box-sizing: border-box; /* Penting untuk perhitungan lebar/tinggi */
+    margin: 0; /* Hapus semua margin default */
+    padding: 0; /* Hapus semua padding default */
+}
+
 html, body {
-  height: 100%;
-  margin: 0;
+  height: 100%; /* Pastikan tingginya 100% dari viewport */
   font-family: 'Poppins', sans-serif;
   background-color: var(--brand-light);
   display: flex;
   flex-direction: column;
+  overflow-x: hidden; /* Hanya untuk scroll horizontal */
+  /* overflow-y: hidden; /* Coba ini jika yakin halaman login tidak akan pernah di-scroll */
+}
+
+body {
+  overflow-y: auto; /* Ini memungkinkan scroll vertikal jika konten lain di luar login page panjang */
 }
 
 #app {
-  flex: 1 0 auto;
+  flex: 1 0 auto; /* Ini sudah benar */
+  position: relative; /* Bisa jadi perlu jika ada elemen absolut di dalamnya */
 }
 
 .custom-navbar {
@@ -346,17 +361,6 @@ footer.custom-footer p {
   padding-right: 2.5rem;
 }
 
-.row > .col-md-4::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 1.25rem;
-  height: 100%;
-  width: 2px;
-  background-color: var(--brand-primary);
-  border-radius: 1px;
-}
-
 .row > .col-md-8 {
   padding-left: 2.5rem;
   border-top: none;
@@ -367,17 +371,6 @@ footer.custom-footer p {
   padding-top: 1rem;
 }
 
-.col-md-8 h4 {
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--brand-secondary);
-}
-
-.profile-card .card-body {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
-
 .tab-pane {
   display: none;
 }
@@ -386,13 +379,111 @@ footer.custom-footer p {
   display: block;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Gradient Background for Login/Register Page */
+.login-gradient-bg {
+    /* MENGGUNAKAN GRADIENT YANG SAMA DENGAN LANDING PAGE */
+    background: linear-gradient(135deg, var(--brand-light) 0%, var(--brand-secondary) 100%);
 }
-.animate-fade-in {
-  opacity: 0;
-  animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+
+/* Blob Background for Login/Register Page */
+.login-blob-bg {
+    position: absolute;
+    /* MENGGUNAKAN WARNA DAN OPACITY YANG LEBIH HALUS */
+    background-color: rgba(60, 169, 195, 0.08); /* Opacity disesuaikan agar tidak terlalu mencolok */
+    border-radius: 50%;
+    filter: blur(200px); /* Tingkatkan blur untuk efek lebih halus */
+    opacity: 1; /* Opacity dikontrol oleh rgba() di background-color */
+    z-index: 0;
+    animation: pulseBlob 8s infinite alternate ease-in-out;
+}
+
+.login-blob-bg.blob-one {
+    width: 380px; /* Sedikit lebih besar */
+    height: 380px;
+    top: -80px; /* Sedikit lebih jauh */
+    left: -80px;
+    animation-delay: 0s;
+}
+
+.login-blob-bg.blob-two {
+    width: 480px; /* Sedikit lebih besar */
+    height: 480px;
+    bottom: -130px;
+    right: -130px;
+    transform: rotate(30deg);
+    animation-delay: 2s;
+}
+
+/* Section for Login/Register - Solusi Tinggi Paling Andal */
+.login-register-section {
+    /* INI KRUSIAL: SESUAIKAN ANGKA TINGGI NAVBAR DAN FOOTER ANDA */
+    /* Berdasarkan CSS yang Anda berikan, tidak ada fixed height untuk navbar/footer.
+       Asumsi: jika navbar dan footer TERPISAH dan TIDAK tampil di halaman login/register,
+       maka min-height 100vh adalah yang terbaik.
+       Jika navbar dan footer TETAP TAMPIL, Anda harus menghitung tingginya.
+       Saya akan asumsikan halaman login/register *tidak* menampilkan navbar/footer,
+       sehingga 100vh bisa digunakan. Jika salah, GANTI! */
+    min-height: 100vh; /* Umumnya untuk halaman login/register standalone */
+
+    display: flex;
+    align-items: center; /* Untuk menengahkan konten secara vertikal */
+    justify-content: center; /* Untuk menengahkan konten secara horizontal */
+    position: relative;
+    overflow: hidden; /* Penting agar blobs tidak menyebabkan scroll */
+    /* Padding vertikal diatur oleh kelas Bootstrap seperti py-4 di HTML */
+}
+
+/* Tombol kustom untuk form auth (login/register) */
+.custom-btn-auth {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-size: 1rem;
+}
+
+.custom-btn-auth:hover {
+    background-color: var(--brand-primary-hover);
+    border-color: var(--brand-primary-hover);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.custom-btn-auth:active {
+    background-color: var(--brand-primary-active);
+    border-color: var(--brand-primary-active);
+    color: white;
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Untuk card login/register */
+.login-register-section .card {
+    border-radius: 1.5rem !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    /* Jika konten dalam card terlalu banyak di perangkat kecil, aktifkan ini: */
+    /* max-height: 90vh; */
+    /* overflow-y: auto; */
+}
+
+/* Pastikan form-control-lg konsisten */
+.form-control-lg {
+    height: calc(2.2em + 0.6rem + 2px);
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.75rem;
+    border: 3px solid var(--brand-secondary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.form-control-lg:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.25rem rgba(60, 169, 195, 0.25);
 }
 
 @keyframes slideUp {
@@ -441,13 +532,14 @@ footer.custom-footer p {
 .z-index-1 { z-index: 1; }
 .overflow-hidden { overflow: hidden; }
 
+/* PASTIKAN INI HANYA UNTUK LANDING PAGE, BUKAN LOGIN/REGISTER */
 .landing-blob-bg, .about-bg-blob {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.15;
-  filter: blur(80px);
-  animation: pulseBlob 8s infinite alternate ease-in-out;
-  z-index: 0;
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15; /* Opacity yang sama dengan landing */
+    filter: blur(80px); /* Blur yang sama dengan landing */
+    animation: pulseBlob 8s infinite alternate ease-in-out;
+    z-index: 0;
 }
 
 .blob-one { width: 450px; height: 450px; background-color: var(--brand-primary); top: -120px; left: -120px; animation-delay: 0s; }
@@ -475,11 +567,12 @@ footer.custom-footer p {
   background-color: var(--brand-secondary) !important;
 }
 
-.features-card {
-  border-radius: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+ .features-card {
+   border-radius: 1.5rem;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid rgba(0,0,0,0.05);
-}
+  border: none; /* Menghapus garis (border) pada card fitur */
+ }
 
 .features-card:hover {
   transform: translateY(-8px);

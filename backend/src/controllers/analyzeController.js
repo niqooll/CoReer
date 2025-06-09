@@ -1,20 +1,17 @@
 // backend/src/controllers/analyzeController.js
 const axios = require('axios');
 const FormData = require('form-data');
-const AnalysisHistory = require('../models/AnalysisHistory'); 
-const { getCurrentUser } = require('../models/userModel'); 
+const AnalysisHistory = require('../models/AnalysisHistory');
+const { getCurrentUser } = require('../models/userModel');
 
 // URL layanan ML Flask. Sebaiknya simpan di file .env untuk produksi.
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001/match'; 
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001/match';
 
 const matchCV = async (request, h) => {
-  console.log('--- Inside matchCV Handler ---');
-  console.log('request.auth object:', request.auth);
-  console.log('request.auth.credentials object:', request.auth.credentials);
-
   const { cv } = request.payload;
 
   if (!cv) {
+    // Keep this log as it indicates a client-side issue or missing payload
     console.log('File CV tidak ditemukan di payload.');
     return h.response({
       status: 'fail',
@@ -29,6 +26,7 @@ const matchCV = async (request, h) => {
   });
 
   try {
+    // Keep this log to confirm the request is being sent
     console.log('Mengirim CV ke layanan ML untuk dianalisis...');
     const response = await axios.post(ML_SERVICE_URL, form, {
       headers: {
@@ -36,10 +34,7 @@ const matchCV = async (request, h) => {
       },
     });
 
-    console.log('Menerima respons dari layanan ML.');
-
     const mlResponseData = response.data;
-    console.log('Raw ML Response Data:', JSON.stringify(mlResponseData, null, 2)); // Debug log raw response
 
     let receivedMatchingJobs = mlResponseData.data;
     let processedMatchingJobs = [];
@@ -48,8 +43,8 @@ const matchCV = async (request, h) => {
     if (typeof receivedMatchingJobs === 'string') {
         try {
             receivedMatchingJobs = JSON.parse(receivedMatchingJobs);
-            console.log('ML Response Data (string) parsed to:', receivedMatchingJobs);
         } catch (e) {
+            // Keep this error log as it indicates a malformed response from ML service
             console.error('Failed to JSON.parse ML response data string:', e);
             receivedMatchingJobs = []; // Fallback to empty array on parse error
         }
@@ -62,9 +57,9 @@ const matchCV = async (request, h) => {
             if (typeof item === 'string') {
                 try {
                     const parsedItem = JSON.parse(item);
-                    console.log('Parsed individual job string:', parsedItem);
                     return parsedItem;
                 } catch (e) {
+                    // Keep this error log for individual malformed job strings
                     console.error('Failed to parse individual job string:', item, e);
                     return {}; // Fallback for invalid individual item
                 }
@@ -72,6 +67,7 @@ const matchCV = async (request, h) => {
             return item; // Sudah berupa objek
         });
     } else {
+        // Keep this warning as it indicates an unexpected ML response format
         console.warn('ML Response data.data is not an array. Converting to empty array.');
         processedMatchingJobs = [];
     }
@@ -80,19 +76,22 @@ const matchCV = async (request, h) => {
     if (mlResponseData.status === 'success') {
       try {
         if (!request.auth.credentials || !request.auth.credentials.id) {
+            // This is a critical error, so keep the log
             console.error('Error: request.auth.credentials.id is missing or null for saving history.');
             throw new Error('User ID not available for saving history. Authentication issue.');
         }
-        const userId = request.auth.credentials.id; 
+        const userId = request.auth.credentials.id;
         const cvFilename = cv.hapi.filename;
-        
+
         const predictionSummary = {
             total_jobs_found: processedMatchingJobs.length, // Gunakan `processedMatchingJobs`
         };
 
-        await AnalysisHistory.create(userId, cvFilename, predictionSummary, processedMatchingJobs); // Gunakan `processedMatchingJobs`
+        await AnalysisHistory.create(userId, cvFilename, predictionSummary, processedMatchingJobs);
+        // Keep this log to confirm successful history saving
         console.log('Analysis history saved successfully for user:', userId);
       } catch (historySaveError) {
+        // Essential error log for debugging history saving issues
         console.error('Error saving analysis history in matchCV handler:', historySaveError.message);
       }
     }
@@ -101,6 +100,7 @@ const matchCV = async (request, h) => {
     return h.response(mlResponseData).code(200);
 
   } catch (error) {
+    // This is a crucial error log for any issues with the ML service or general try-catch block
     console.error('Error saat menghubungi layanan ML atau menyimpan history:', error.message);
 
     if (error.response) {
@@ -110,11 +110,11 @@ const matchCV = async (request, h) => {
         detail: error.response.data,
       }).code(error.response.status || 500);
     }
-    
+
     return h.response({
       status: 'error',
       message: 'Tidak dapat terhubung ke layanan analisis CV.',
-    }).code(503); 
+    }).code(503);
   }
 };
 

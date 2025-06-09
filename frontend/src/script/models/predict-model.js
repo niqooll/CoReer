@@ -1,6 +1,6 @@
 // src/script/models/predict-model.js
 import CONFIG from '../config.js';
-import { getCurrentUser } from './auth-model.js';
+import { getCurrentUser } from '../models/auth-model.js';
 
 const API_BASE = CONFIG.BASE_URL;
 

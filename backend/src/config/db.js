@@ -1,24 +1,27 @@
-// backend/src/config/db.js
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'auth_db',
-  password: '311004',
+  user: 'postgres.sjwnuwpybgdcpavdmeyl',
+  host: 'aws-0-ap-southeast-1.pooler.supabase.com',
+  database: 'postgres',
+  password: '31Agustus2004',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-// Fungsi untuk cek koneksi DB
+module.exports = pool;
+
+// Fungsi cek koneksi DB
 async function testConnection() {
   try {
     const res = await pool.query('SELECT NOW()');
     console.log('Database connected:', res.rows[0].now);
   } catch (err) {
     console.error('Database connection error:', err);
-    process.exit(1); // keluar dari aplikasi jika gagal konek DB
+    process.exit(1);
   }
 }
 
 module.exports = { pool, testConnection };
-

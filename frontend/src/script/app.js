@@ -1,4 +1,3 @@
-// src/script/app.js
 // Import fungsionalitas utama aplikasi dan model autentikasi.
 import { getCurrentUser, logout as performLogout } from './models/auth-model.js';
 import { applyViewTransition } from './utils/index.js';
@@ -78,8 +77,6 @@ class App {
    */
   updateNavLinks() {
     const user = getCurrentUser(); // Mendapatkan objek pengguna yang sedang login (jika ada)
-    console.log('--- updateNavLinks called ---');
-    console.log('Current user status:', user); // Log status pengguna untuk debugging
 
     // Mendapatkan referensi elemen link navigasi
     const landingLink = document.getElementById('landing-link');
@@ -88,47 +85,40 @@ class App {
     const registerLink = document.getElementById('register-link');
     const profileDropdownDesktop = document.getElementById('profile-dropdown-desktop');
     const profileLinksMobile = document.getElementById('profile-links-mobile');
-    const historyLink = document.getElementById('history-link'); // Referensi ke link history
+    const historyLink = document.getElementById('history-link');
 
     // Logika untuk menampilkan/menyembunyikan link berdasarkan status login
     if (user) {
       // Jika pengguna login:
-      // Tampilkan link yang relevan untuk pengguna yang login
       if (landingLink) landingLink.style.display = 'block';
       if (faqLink) faqLink.style.display = 'block';
-      if (historyLink) historyLink.style.display = 'block'; // Tampilkan link History
+      if (historyLink) historyLink.style.display = 'block';
 
-      // Sembunyikan link yang relevan untuk pengguna yang belum login
       if (loginLink) loginLink.style.display = 'none';
       if (registerLink) registerLink.style.display = 'none';
 
-      // Tampilkan elemen profil (desktop dan mobile)
       if (profileDropdownDesktop) {
-        profileDropdownDesktop.classList.remove('d-none'); // Hapus d-none untuk menampilkan
+        profileDropdownDesktop.classList.remove('d-none');
       }
       if (profileLinksMobile) {
-        profileLinksMobile.classList.remove('d-none'); // Hapus d-none untuk menampilkan
+        profileLinksMobile.classList.remove('d-none');
       }
     } else {
       // Jika pengguna belum login:
-      // Sembunyikan link yang relevan untuk pengguna yang login
       if (landingLink) landingLink.style.display = 'none';
-      if (historyLink) historyLink.style.display = 'none'; // Sembunyikan link History
+      if (historyLink) historyLink.style.display = 'none';
 
-      // Tampilkan link yang relevan untuk pengguna yang belum login
       if (faqLink) faqLink.style.display = 'block';
       if (loginLink) loginLink.style.display = 'block';
       if (registerLink) registerLink.style.display = 'block';
 
-      // Sembunyikan elemen profil (desktop dan mobile)
       if (profileDropdownDesktop) {
-        profileDropdownDesktop.classList.add('d-none'); // Tambahkan d-none untuk menyembunyikan
+        profileDropdownDesktop.classList.add('d-none');
       }
       if (profileLinksMobile) {
-        profileLinksMobile.classList.add('d-none'); // Tambahkan d-none untuk menyembunyikan
+        profileLinksMobile.classList.add('d-none');
       }
     }
-    console.log('--- End updateNavLinks ---');
   }
 
   /**
@@ -136,25 +126,22 @@ class App {
    * Termasuk logika untuk pengalihan (redirect) dan penanganan presenter.
    */
   async renderPage() {
-    const user = getCurrentUser(); // Dapatkan status autentikasi terbaru
-    const hash = window.location.hash || '#/'; // Dapatkan hash URL, default ke '/'
-    const path = hash.slice(1); // Ambil path tanpa karakter '#'
+    const user = getCurrentUser();
+    const hash = window.location.hash || '#/';
+    const path = hash.slice(1);
 
     // Logika pengalihan: Jika pengguna tidak login dan mencoba mengakses rute non-publik,
     // alihkan ke halaman login.
     if (!user && !this.publicRoutes.includes(path)) {
       window.location.hash = '#/login';
-      return; // Hentikan proses rendering halaman saat ini
+      return;
     }
 
-    // Ambil modul presenter secara dinamis berdasarkan path
     let PresenterModule;
     try {
-      // Tunggu hingga promise dynamic import selesai di-resolve
       const module = await this.routePresenters[path];
       PresenterModule = module;
 
-      // Jika presenter tidak ditemukan untuk path ini, tampilkan halaman 404
       if (!PresenterModule) {
         this.appContainer.innerHTML = '<h1>404 Page Not Found</h1>';
         return;
@@ -166,20 +153,15 @@ class App {
       return;
     }
 
-    // Terapkan View Transition API untuk animasi navigasi yang mulus
     await applyViewTransition('#app', async () => {
-      // Inisialisasi dan jalankan presenter
-      // Periksa apakah presenter adalah kelas dengan metode 'init' atau objek dengan metode 'init'
       if (typeof PresenterModule === 'function' && PresenterModule.prototype?.init instanceof Function) {
         const instance = new PresenterModule(this.appContainer);
         if (instance.init instanceof Function) {
           await instance.init();
         }
       } else if (PresenterModule && typeof PresenterModule.init === 'function') {
-        // Ini untuk kasus di mana presenter mungkin bukan kelas (misalnya, objek singleton)
         await PresenterModule.init(this.appContainer);
       } else {
-        // Kasus jika presenter tidak valid atau tidak memiliki metode init
         this.appContainer.innerHTML = '<h1>Presenter Invalid</h1>';
       }
     });
@@ -190,9 +172,9 @@ class App {
    * Menghapus sesi pengguna, memperbarui navigasi, dan mengarahkan ke halaman utama.
    */
   logout() {
-    performLogout(); // Memanggil fungsi logout dari model autentikasi
-    this.updateNavLinks(); // Memperbarui tampilan navbar setelah logout
-    window.location.hash = '#/'; // Mengarahkan kembali ke halaman utama
+    performLogout();
+    this.updateNavLinks();
+    window.location.hash = '#/';
   }
 
   /**
@@ -200,8 +182,8 @@ class App {
    * Dipanggil sekali saat aplikasi pertama kali dimuat.
    */
   async init() {
-    this.updateNavLinks(); // Inisialisasi tampilan navbar
-    await this.renderPage(); // Render halaman awal
+    this.updateNavLinks();
+    await this.renderPage();
   }
 }
 

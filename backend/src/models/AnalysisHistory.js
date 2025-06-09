@@ -1,5 +1,5 @@
 // backend/src/models/AnalysisHistory.js
-const { pool } = require('../config/db'); 
+const { pool } = require('../config/db');
 
 class AnalysisHistory {
   /**
@@ -25,6 +25,7 @@ class AnalysisHistory {
       );
       return result.rows[0];
     } catch (error) {
+      // Log error penting untuk debugging masalah saat membuat riwayat
       console.error('Error creating analysis history:', error);
       throw new Error('Failed to save analysis history to database.');
     }
@@ -41,32 +42,34 @@ class AnalysisHistory {
         `SELECT id, cv_filename, analysis_date, prediction_summary, matching_jobs, created_at, updated_at
          FROM analysis_history
          WHERE user_id = $1
-         ORDER BY analysis_date DESC`, 
+         ORDER BY analysis_date DESC`,
         [userId]
       );
       return result.rows;
     } catch (error) {
+      // Log error penting untuk debugging masalah saat mengambil riwayat
       console.error('Error fetching analysis history for user:', error);
       throw new Error('Failed to retrieve analysis history from database.');
     }
   }
 
   static async delete(id, userId) {
-        console.log(`[DB DELETE] Executing delete query for ID: ${id}, User ID: ${userId}`); // Log ini
-        try {
-            const result = await pool.query(
-                `DELETE FROM analysis_history 
-                 WHERE id = $1 AND user_id = $2 
-                 RETURNING id`,
-                [id, userId]
-            );
-            console.log(`[DB DELETE] Query result rows: ${result.rows.length}`); // Log ini
-            return result.rows.length > 0;
-        } catch (error) {
-            console.error('[DB DELETE] Error during database deletion:', error); // Log ini
-            throw new Error('Failed to delete analysis history from database.');
-        }
+    try {
+      const result = await pool.query(
+        `DELETE FROM analysis_history
+         WHERE id = $1 AND user_id = $2
+         RETURNING id`,
+        [id, userId]
+      );
+      // Log ini berguna untuk mengkonfirmasi apakah ada baris yang dihapus atau tidak.
+      // Jika result.rows.length > 0, berarti penghapusan berhasil.
+      return result.rows.length > 0;
+    } catch (error) {
+      // Log error penting untuk debugging masalah selama penghapusan database
+      console.error('[DB DELETE] Error during database deletion:', error);
+      throw new Error('Failed to delete analysis history from database.');
     }
+  }
 }
 
 module.exports = AnalysisHistory;

@@ -13,8 +13,7 @@ export default class RegisterPresenter {
   }
 
   render() {
-    this.app.innerHTML = RegisterView.renderRegister(this.errorMessage);
-    RegisterView.bindRegisterFormSubmit(this.handleRegister.bind(this));
+    RegisterView.showRegister(this.app, this.errorMessage, this.handleRegister.bind(this));
   }
 
   async handleRegister(data) {

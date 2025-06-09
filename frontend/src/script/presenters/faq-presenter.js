@@ -1,13 +1,13 @@
+// src/script/presenters/FaqPresenter.js
+
 import FaqView from '../views/faq-view.js';
 
 class FaqPresenter {
   constructor(container) {
     this.container = container;
     this.view = new FaqView();
-  }
-
-  async init() {
-    const faqData = [
+    // Data FAQ dummy
+    this.faqData = [
       {
         question: "Apa itu CoReer?",
         answer: "CoReer adalah platform karir yang membantu Anda menemukan pekerjaan impian dan mengembangkan karir profesional. Kami menyediakan berbagai layanan mulai dari pencarian kerja hingga pengembangan skill."
@@ -41,62 +41,79 @@ class FaqPresenter {
         answer: "Anda dapat logout dengan mengklik tombol 'Logout' yang tersedia di menu profile (desktop) atau di menu navigasi mobile. Pastikan untuk selalu logout ketika menggunakan perangkat publik."
       }
     ];
+  }
 
-    this.container.innerHTML = this.view.render(faqData);
-    
+  async init() {
+    this.container.innerHTML = this.view.render(this.faqData);
+
+    // Panggil _bindEvents setelah elemen dirender ke DOM
     this._bindEvents();
   }
 
   _bindEvents() {
     const faqItems = this.container.querySelectorAll('.faq-item');
-    
-    faqItems.forEach(item => {
-      const question = item.querySelector('.faq-question button');
-      const answer = item.querySelector('.faq-answer');
-      const icon = item.querySelector('.faq-icon');
-      
-      question.addEventListener('click', (e) => {
-        e.preventDefault();
-        const isOpen = !answer.classList.contains('d-none');
+    const searchInput = this.container.querySelector('#faq-search');
 
-        // Close all other items
+    if (!faqItems.length || !searchInput) {
+      console.error('FAQ elements not found in the DOM for event binding.');
+      return;
+    }
+
+    // Event listener untuk buka/tutup FAQ
+    faqItems.forEach(item => {
+      const questionButton = item.querySelector('.faq-question button');
+      const answerElement = item.querySelector('.faq-answer');
+      const iconElement = item.querySelector('.faq-icon');
+
+      questionButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        // Tutup semua item FAQ yang sedang terbuka kecuali yang sedang diklik
         faqItems.forEach(otherItem => {
-          const otherAnswer = otherItem.querySelector('.faq-answer');
-          const otherIcon = otherItem.querySelector('.faq-icon');
-          otherAnswer.classList.add('d-none');
-          otherIcon.textContent = '+';
-          otherItem.classList.remove('active');
+          if (otherItem !== item) { // Jika bukan item yang diklik saat ini
+            const otherAnswer = otherItem.querySelector('.faq-answer');
+            const otherIcon = otherItem.querySelector('.faq-icon');
+            if (!otherAnswer.classList.contains('d-none')) { // Jika terbuka
+              otherAnswer.classList.add('d-none');
+              otherIcon.classList.remove('bi-dash-lg');
+              otherIcon.classList.add('bi-plus-lg');
+              otherItem.classList.remove('active');
+            }
+          }
         });
-        
-        // Open current item if it wasn't open
-        if (!isOpen) {
-          answer.classList.remove('d-none');
-          icon.textContent = '−';
-          item.classList.add('active');
+
+        // Toggle item yang sedang diklik
+        answerElement.classList.toggle('d-none');
+        item.classList.toggle('active'); // Tambah/hapus kelas 'active' pada kartu
+
+        if (answerElement.classList.contains('d-none')) {
+          iconElement.classList.remove('bi-dash-lg');
+          iconElement.classList.add('bi-plus-lg');
+        } else {
+          iconElement.classList.remove('bi-plus-lg');
+          iconElement.classList.add('bi-dash-lg');
         }
       });
     });
 
-    const searchInput = this.container.querySelector('#faq-search');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        this._filterFAQ(e.target.value);
-      });
-    }
+    // Event listener untuk fungsi pencarian
+    searchInput.addEventListener('input', (e) => {
+      this._filterFAQ(e.target.value);
+    });
   }
 
   _filterFAQ(searchTerm) {
     const faqItems = this.container.querySelectorAll('.faq-item');
-    const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase().trim();
 
     faqItems.forEach(item => {
-      const question = item.querySelector('.faq-question').textContent.toLowerCase();
-      const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
-      
-      if (question.includes(term) || answer.includes(term)) {
-        item.classList.remove('d-none');
+      const questionText = item.querySelector('.faq-question-text').textContent.toLowerCase();
+      const answerText = item.querySelector('.faq-answer p').textContent.toLowerCase();
+
+      if (questionText.includes(term) || answerText.includes(term)) {
+        item.classList.remove('d-none'); // Tampilkan item
       } else {
-        item.classList.add('d-none');
+        item.classList.add('d-none'); // Sembunyikan item
       }
     });
   }
