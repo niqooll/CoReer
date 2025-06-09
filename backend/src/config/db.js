@@ -1,19 +1,17 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  user: 'postgres.sjwnuwpybgdcpavdmeyl',
-  host: 'aws-0-ap-southeast-1.pooler.supabase.com',
-  database: 'postgres',
-  password: '31Agustus2004',
-  port: 5432,
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
   ssl: {
     rejectUnauthorized: false
   }
 });
 
-module.exports = pool;
-
-// Fungsi cek koneksi DB
 async function testConnection() {
   try {
     const res = await pool.query('SELECT NOW()');
