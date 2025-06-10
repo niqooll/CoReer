@@ -18,10 +18,9 @@ from tensorflow.keras.layers import Input, Dense, Embedding, LSTM, Dropout
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import warnings
-import math # Import math untuk math.isnan
+import math
 warnings.filterwarnings('ignore')
 
-# Download required NLTK data
 try:
     nltk.download('punkt')
     nltk.download('stopwords')
@@ -29,7 +28,6 @@ try:
 except:
     pass
 
-# --- Fungsi Helper Baru untuk Mengganti NaN ---
 def replace_nan_with_none(data):
     """
     Recursively replaces NaN float values with None in dictionaries and lists.
@@ -40,11 +38,9 @@ def replace_nan_with_none(data):
     elif isinstance(data, list):
         return [replace_nan_with_none(elem) for elem in data]
     elif isinstance(data, float) and math.isnan(data):
-        return None  # Replace NaN with None, which JSON converts to 'null'
+        return None
     else:
         return data
-# --- Akhir Fungsi Helper Baru ---
-
 
 class CVJobMatcher:
     def __init__(self):
@@ -82,19 +78,11 @@ class CVJobMatcher:
         """
         Preprocessing teks dengan cleaning dan normalisasi
         """
-        # Convert to lowercase
         text = text.lower()
-        
-        # Remove special characters and numbers (keep only letters and spaces)
         text = re.sub(r'[^a-zA-Z\s]', '', text)
-        
-        # Remove extra whitespaces
         text = re.sub(r'\s+', ' ', text)
-        
-        # Tokenize
         tokens = word_tokenize(text)
         
-        # Remove stopwords and stem
         processed_tokens = []
         for token in tokens:
             if token not in self.stop_words and len(token) > 2:
@@ -106,31 +94,26 @@ class CVJobMatcher:
     def load_job_dataset(self, dataset_path):
         """
         Load dataset lowongan kerja
-        Expected columns: ['Title', 'Company', 'Location', 'Country', 'Job Description', 'Job Requirements', 'Link', 'City', 'Region']
+        Expected columns: ['Title', 'Company', 'Location', 'Country', 'Job Description', 'Job Requirements', 'Link']
         """
         try:
             self.job_data = pd.read_csv(dataset_path)
             
-            # Pastikan kolom ada dengan nama yang benar
-            expected_columns = ['Title', 'Company', 'Location', 'Country', 'Job Description', 'Job Requirements', 'Link', 'City', 'Region']
+            expected_columns = ['Title', 'Company', 'Location', 'Country', 'Job Description', 'Job Requirements', 'Link']
             missing_columns = [col for col in expected_columns if col not in self.job_data.columns]
             
             if missing_columns:
                 print(f"Warning: Missing columns: {missing_columns}")
                 print(f"Available columns: {list(self.job_data.columns)}")
             
-            # Gabungkan semua informasi job menjadi satu teks untuk matching
             self.job_data['combined_text'] = (
                 self.job_data['Title'].fillna('') + ' ' +
                 self.job_data['Company'].fillna('') + ' ' +
                 self.job_data['Job Description'].fillna('') + ' ' +
                 self.job_data['Job Requirements'].fillna('') + ' ' +
-                self.job_data['Location'].fillna('') + ' ' +
-                self.job_data['City'].fillna('') + ' ' +
-                self.job_data['Region'].fillna('')
+                self.job_data['Location'].fillna('')
             )
             
-            # Preprocess job texts
             self.job_data['processed_text'] = self.job_data['combined_text'].apply(
                 self.preprocess_text
             )
@@ -143,19 +126,18 @@ class CVJobMatcher:
             print(f"Error loading dataset: {e}")
             return False
     
-    def build_job_vectors(self, texts=None): # Tambahkan parameter texts opsional
+    def build_job_vectors(self, texts=None):
         """
         Build TF-IDF vectors untuk dataset lowongan kerja
         """
-        if texts is None: # Jika tidak ada teks yang diberikan, gunakan job_data yang sudah ada
+        if texts is None:
             if self.job_data is None:
                 print("Please load job dataset first")
                 return False
             job_texts = self.job_data['processed_text'].tolist()
-            self.job_vectors = self.tfidf_vectorizer.fit_transform(job_texts) # Fit dan transform
+            self.job_vectors = self.tfidf_vectorizer.fit_transform(job_texts)
             print(f"Built job vectors with shape: {self.job_vectors.shape}")
-        else: # Jika teks diberikan (misalnya saat testing di main)
-            # Hanya transform, jangan fit ulang vectorizer yang sudah ada
+        else:
             return self.tfidf_vectorizer.transform(texts)
             
         return True
@@ -164,10 +146,8 @@ class CVJobMatcher:
         """
         Create neural network model untuk similarity scoring
         """
-        # Input layer
         input_layer = Input(shape=(5000,))
         
-        # Dense layers
         dense1 = Dense(512, activation='relu')(input_layer)
         dropout1 = Dropout(0.3)(dense1)
         
@@ -177,10 +157,8 @@ class CVJobMatcher:
         dense3 = Dense(128, activation='relu')(dropout2)
         dropout3 = Dropout(0.2)(dense3)
         
-        # Output layer for similarity score
         output = Dense(1, activation='sigmoid')(dropout3)
         
-        # Create model
         self.model = Model(inputs=input_layer, outputs=output)
         self.model.compile(
             optimizer='adam',
@@ -199,29 +177,19 @@ class CVJobMatcher:
             return []
         
         try:
-            # Preprocess CV text
             processed_cv = self.preprocess_text(cv_text)
-            
-            # Transform CV text menggunakan TF-IDF vectorizer yang sama
             cv_vector = self.tfidf_vectorizer.transform([processed_cv])
-            
-            # Hitung cosine similarity
             similarities = cosine_similarity(cv_vector, self.job_vectors).flatten()
-            
-            # Get top K matching jobs
             top_indices = similarities.argsort()[-top_k:][::-1]
             
-            # Prepare results
             results = []
             for idx in top_indices:
                 job_info = self.job_data.iloc[idx].copy()
                 job_info['similarity_score'] = similarities[idx]
                 results.append(job_info.to_dict())
             
-            # --- Perbaikan: Bersihkan NaN dari hasil sebelum dikembalikan ---
             cleaned_results = replace_nan_with_none(results)
             return cleaned_results
-            # --- Akhir Perbaikan ---
             
         except Exception as e:
             print(f"Error finding matching jobs: {e}")
@@ -232,30 +200,23 @@ class CVJobMatcher:
         Simpan model dalam folder ml/
         """
         try:
-            # Pastikan folder ml exists
             ml_folder = "ml"
             if not os.path.exists(ml_folder):
                 os.makedirs(ml_folder)
                 print(f"Created folder: {ml_folder}")
             
-            # Define file paths dalam folder ml
             base_path = os.path.join(ml_folder, model_name)
             
-            # Save TF-IDF vectorizer
             joblib.dump(self.tfidf_vectorizer, f"{base_path}_tfidf_vectorizer.pkl")
-            
-            # Save job data dan vectors
             joblib.dump(self.job_data, f"{base_path}_job_data.pkl")
             joblib.dump(self.job_vectors, f"{base_path}_job_vectors.pkl")
             
-            # Save preprocessing components
             model_components = {
                 'stemmer': self.stemmer,
                 'stop_words': self.stop_words
             }
             joblib.dump(model_components, f"{base_path}_components.pkl")
             
-            # Save neural model
             if self.model is not None:
                 self.model.save(f"{base_path}_neural_model.h5")
             
@@ -279,11 +240,9 @@ class CVJobMatcher:
         Load model dari folder ml/
         """
         try:
-            # Define file paths dalam folder ml
             ml_folder = "ml"
             base_path = os.path.join(ml_folder, model_name)
             
-            # Check if files exist
             required_files = [
                 f"{base_path}_tfidf_vectorizer.pkl",
                 f"{base_path}_job_data.pkl", 
@@ -296,19 +255,14 @@ class CVJobMatcher:
                     print(f"Error: Required file not found: {file_path}")
                     return False
             
-            # Load TF-IDF vectorizer
             self.tfidf_vectorizer = joblib.load(f"{base_path}_tfidf_vectorizer.pkl")
-            
-            # Load job data dan vectors
             self.job_data = joblib.load(f"{base_path}_job_data.pkl")
             self.job_vectors = joblib.load(f"{base_path}_job_vectors.pkl")
             
-            # Load preprocessing components
             components = joblib.load(f"{base_path}_components.pkl")
             self.stemmer = components['stemmer']
             self.stop_words = components['stop_words']
             
-            # Load neural model
             neural_model_path = f"{base_path}_neural_model.h5"
             if os.path.exists(neural_model_path):
                 try:
@@ -328,57 +282,45 @@ class CVJobMatcher:
             print(f"Error loading model: {e}")
             return False
 
-# Contoh penggunaan
 def main():
-    # Initialize matcher
     matcher = CVJobMatcher()
     
-    # Load job dataset
     print("Loading job dataset...")
-    if not matcher.load_job_dataset("dataset/jobs_cleaned.csv"):
+    if not matcher.load_job_dataset("ml/dataset/jobs_cleaned.csv"):
         print("Failed to load dataset")
         return
     
-    # Build job vectors
     print("Building job vectors...")
     if not matcher.build_job_vectors():
         print("Failed to build vectors")
         return
     
-    # Create neural model
     print("Creating neural model...")
     matcher.create_neural_model()
     
-    # Testing penggunaan dengan CV
     print("\nTesting with sample CV...")
     
-    # Extract text from CV PDF
-    cv_text = matcher.extract_text_from_pdf("CV.pdf")  # path CV
-    
-    # Find matching jobs
+    cv_text = matcher.extract_text_from_pdf("CV.pdf")
     matches = matcher.find_matching_jobs(cv_text, top_k=5)
     
     print(f"\nFound {len(matches)} matching jobs:")
     for i, match in enumerate(matches, 1):
         print(f"\n{i}. {match.get('Title', 'N/A')} at {match.get('Company', 'N/A')}")
-        print(f"   Location: {match.get('Location', 'N/A')}, {match.get('City', 'N/A')}, {match.get('Region', 'N/A')}")
+        print(f"   Location: {match.get('Location', 'N/A')}")
         print(f"   Country: {match.get('Country', 'N/A')}")
         print(f"   Similarity Score: {match.get('similarity_score', 0.0):.4f}")
         print(f"   Description: {match.get('Job Description', 'N/A')[:100]}...")
         print(f"   Link: {match.get('Link', 'N/A')}")
     
-    # Save model ke folder ml/
     print("\nSaving model...")
     if matcher.save_model("cv_job_matcher_model"):
         print("Model saved successfully!")
     
-    # Test loading model
     print("\nTesting model loading...")
     new_matcher = CVJobMatcher()
     if new_matcher.load_model("cv_job_matcher_model"):
         print("Model loaded successfully!")
         
-        # Test dengan loaded model
         test_matches = new_matcher.find_matching_jobs(cv_text, top_k=3)
         print(f"Test with loaded model: {len(test_matches)} matches found")
 
