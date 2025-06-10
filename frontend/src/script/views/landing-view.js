@@ -12,7 +12,7 @@ export function renderLanding() {
           <div class="col-lg-6 mb-4 mb-lg-0 animate-fade-in">
             <h1 class="display-5 fw-bold text-dark-blue">CoReer: Evaluasi & Tingkatkan CV Anda</h1>
             <p class="lead text-muted animate-fade-in delay-1">
-              Tingkatkan peluang Anda mendapatkan pekerjaan impian dengan alat **Analisis CV CoReer**. Unggah CV Anda, dapatkan skor personalisasi, dan terima saran yang disesuaikan untuk meningkatkan profil Anda. Berdasarkan skor CV Anda, temukan peluang kerja relevan yang cocok dengan keahlian dan pengalaman Anda.
+              Tingkatkan peluang Anda mendapatkan pekerjaan impian dengan alat Analisis CV CoReer. Unggah CV Anda, dapatkan skor personalisasi, dan terima saran yang disesuaikan untuk meningkatkan profil Anda. Berdasarkan skor CV Anda, temukan peluang kerja relevan yang cocok dengan keahlian dan pengalaman Anda.
             </p>
             <div class="d-flex gap-3 mt-4 animate-fade-in delay-2">
               <button id="btn-check-cv" class="btn btn-primary btn-lg custom-btn-landing">Coba Analisis CV Sekarang</button>

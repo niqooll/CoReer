@@ -1,9 +1,13 @@
 // src/script/views/register-view.js
 import { bindFormValidation, isValidEmail, isValidPassword, isNotEmpty } from '../utils/form-validation.js';
 
+function isPasswordMatch(value, formData) {
+  return value === formData.password;
+}
+
 export function showRegister(container, errorMessage = '', onSubmit) {
   container.innerHTML = `
-    <section class="login-register-section py-3 min-vh-75 d-flex align-items-center position-relative overflow-hidden login-gradient-bg">
+  <section class="login-register-section py-3 min-vh-75 d-flex align-items-center position-relative overflow-hidden login-gradient-bg">
       <div class="login-blob-bg blob-one"></div>
       <div class="login-blob-bg blob-two"></div>
       <div class="container position-relative z-index-1">
@@ -48,6 +52,18 @@ export function showRegister(container, errorMessage = '', onSubmit) {
                   />
                   <small id="password-error" class="text-danger mt-1" style="display:none;"></small>
                 </div>
+                <div class="mb-3">
+                  <label for="passwordConfirm" class="form-label visually-hidden">Konfirmasi Password</label>
+                  <input
+                    type="password"
+                    id="passwordConfirm"
+                    name="passwordConfirm"
+                    class="form-control form-control-lg"
+                    placeholder="Konfirmasi password"
+                    required
+                  />
+                  <small id="passwordConfirm-error" class="text-danger mt-1" style="display:none;"></small>
+                </div>
                 ${errorMessage ? `<p class="text-danger mt-3 text-center animate-fade-in">${errorMessage}</p>` : ''}
                 <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 custom-btn-auth">Register</button>
               </form>
@@ -82,6 +98,13 @@ export function showRegister(container, errorMessage = '', onSubmit) {
         validators: [
           { validator: isNotEmpty, message: 'Password tidak boleh kosong.' },
           { validator: isValidPassword, message: 'Password harus minimal 8 karakter.' },
+        ],
+      },
+      passwordConfirm: {
+        errorId: 'passwordConfirm-error',
+        validators: [
+          { validator: isNotEmpty, message: 'Konfirmasi password tidak boleh kosong.' },
+          { validator: isPasswordMatch, message: 'Konfirmasi password tidak sama dengan password.' },
         ],
       },
     },
