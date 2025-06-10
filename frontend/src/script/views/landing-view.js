@@ -27,34 +27,38 @@ export function renderLanding() {
       </div>
     </section>
 
-    <section class="features-section py-5 min-vh-100 d-flex align-items-center bg-brand-secondary">
+    <section class="features-section py-5 bg-brand-secondary">
       <div class="container position-relative z-index-1">
           <h2 class="text-center fw-bold mb-5 animate-fade-in text-dark-blue">Apa yang CoReer Tawarkan</h2>
-          <div class="row text-center">
-              <div class="col-md-4 mb-4 animate-slide-up delay-1">
-                  <div class="card h-100 shadow-sm border-0 features-card">
-                      <div class="card-body">
+          
+          <!-- Improved Card Layout dengan Bootstrap dan Custom Classes -->
+          <div class="row justify-content-center">
+              <div class="col-xl-4 col-lg-6 col-md-8 col-sm-10 mb-4 d-flex justify-content-center animate-slide-up delay-1">
+                  <div class="card h-100 shadow-sm border-0 features-card w-100">
+                      <div class="card-body d-flex flex-column text-center">
                           <i class="bi bi-file-earmark-bar-graph display-4 mb-3 text-brand-primary"></i>
-                          <h5 class="card-title fw-bold">Analisis CV Cerdas</h5>
-                          <p class="card-text text-muted">Dapatkan skor instan dan masukan berbasis AI pada CV Anda untuk menyoroti kekuatan dan area yang perlu ditingkatkan.</p>
+                          <h5 class="card-title fw-bold mb-3">Analisis CV Cerdas</h5>
+                          <p class="card-text text-muted flex-grow-1 d-flex align-items-center justify-content-center">Dapatkan skor instan dan masukan berbasis AI pada CV Anda untuk menyoroti kekuatan dan area yang perlu ditingkatkan.</p>
                       </div>
                   </div>
               </div>
-              <div class="col-md-4 mb-4 animate-slide-up delay-2">
-                  <div class="card h-100 shadow-sm border-0 features-card">
-                      <div class="card-body">
+              
+              <div class="col-xl-4 col-lg-6 col-md-8 col-sm-10 mb-4 d-flex justify-content-center animate-slide-up delay-2">
+                  <div class="card h-100 shadow-sm border-0 features-card w-100">
+                      <div class="card-body d-flex flex-column text-center">
                           <i class="bi bi-briefcase display-4 mb-3 text-brand-primary"></i>
-                          <h5 class="card-title fw-bold">Pencocokan Pekerjaan yang Tepat</h5>
-                          <p class="card-text text-muted">Temukan peluang kerja yang sangat sesuai dengan keahlian dan profil CV Anda.</p>
+                          <h5 class="card-title fw-bold mb-3">Pencocokan Pekerjaan yang Tepat</h5>
+                          <p class="card-text text-muted flex-grow-1 d-flex align-items-center justify-content-center">Temukan peluang kerja yang sangat sesuai dengan keahlian dan profil CV Anda.</p>
                       </div>
                   </div>
               </div>
-              <div class="col-md-4 mb-4 animate-slide-up delay-3">
-                  <div class="card h-100 shadow-sm border-0 features-card">
-                      <div class="card-body">
+              
+              <div class="col-xl-4 col-lg-6 col-md-8 col-sm-10 mb-4 d-flex justify-content-center animate-slide-up delay-3">
+                  <div class="card h-100 shadow-sm border-0 features-card w-100">
+                      <div class="card-body d-flex flex-column text-center">
                           <i class="bi bi-person-lines-fill display-4 mb-3 text-brand-primary"></i>
-                          <h5 class="card-title fw-bold">Wawasan Personal</h5>
-                          <p class="card-text text-muted">Terima tips dan sumber daya yang dapat ditindaklanjuti untuk mengembangkan karier Anda lebih lanjut.</p>
+                          <h5 class="card-title fw-bold mb-3">Wawasan Personal</h5>
+                          <p class="card-text text-muted flex-grow-1 d-flex align-items-center justify-content-center">Terima tips dan sumber daya yang dapat ditindaklanjuti untuk mengembangkan karier Anda lebih lanjut.</p>
                       </div>
                   </div>
               </div>
