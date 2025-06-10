@@ -4,114 +4,157 @@ import { bindFormValidation, isNotEmpty, isValidEmail, isStrongPassword, arePass
 // Ubah parameter errorMessage menjadi feedback object
 export function showEditProfile(container, user, feedback = { type: '', message: '' }, onSubmit, onSubmitPassword) {
   container.innerHTML = `
-    <div class="container my-5 py-5">
-      <h2 class="text-center mb-5 fw-bold text-dark-blue display-5 animate-slide-up">My Account</h2>
+    <div class="container-fluid px-3 px-md-4 my-3 my-md-5 py-3 py-md-5">
+      <h2 class="text-center mb-4 mb-md-5 fw-bold text-dark-blue display-6 display-md-5 animate-slide-up">My Account</h2>
       <div class="row justify-content-center">
-        <div class="col-lg-9 col-md-10">
-          <div class="card p-4 shadow-lg border-0 rounded-4 profile-card animate-fade-in">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0 position-relative">
-                  <div class="list-group list-group-flush profile-tabs" id="profile-section-tabs" role="tablist" aria-label="Profile sections">
+        <div class="col-12 col-lg-10 col-xl-9">
+          <div class="card p-2 p-sm-3 p-md-4 shadow-lg border-0 rounded-4 profile-card animate-fade-in">
+            <div class="card-body p-2 p-sm-3">
+              <div class="row g-3 g-md-4">
+                <!-- Sidebar Navigation -->
+                <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0 position-relative">
+                  <div class="list-group list-group-flush profile-tabs d-flex d-md-block flex-row flex-md-column" id="profile-section-tabs" role="tablist" aria-label="Profile sections">
                     <button
-                      class="list-group-item list-group-item-action active rounded-3 mb-2"
+                      class="list-group-item list-group-item-action active rounded-3 mb-0 mb-md-2 me-2 me-md-0 flex-fill flex-md-auto text-center text-md-start"
                       id="edit-profile-tab"
                       type="button"
                       role="tab"
                       aria-selected="true"
                       aria-controls="edit-profile-section"
                     >
-                      <i class="bi bi-person-fill me-2"></i> Edit Profile
+                      <i class="bi bi-person-fill me-0 me-md-2 d-block d-md-inline"></i> 
+                      <span class="d-none d-sm-inline">Edit Profile</span>
+                      <span class="d-sm-none">Profile</span>
                     </button>
                     <button
-                      class="list-group-item list-group-item-action rounded-3 mb-2"
+                      class="list-group-item list-group-item-action rounded-3 mb-0 mb-md-2 flex-fill flex-md-auto text-center text-md-start"
                       id="change-password-tab"
                       type="button"
                       role="tab"
                       aria-selected="false"
                       aria-controls="change-password-section"
                     >
-                      <i class="bi bi-key-fill me-2"></i> Change Password
+                      <i class="bi bi-key-fill me-0 me-md-2 d-block d-md-inline"></i> 
+                      <span class="d-none d-sm-inline">Change Password</span>
+                      <span class="d-sm-none">Password</span>
                     </button>
                   </div>
                 </div>
 
-                <div class="col-md-8 position-relative">
+                <!-- Main Content Area -->
+                <div class="col-12 col-md-8 col-lg-9 position-relative">
                   <div class="tab-content">
+                    <!-- Edit Profile Section -->
                     <section
                       id="edit-profile-section"
                       role="tabpanel"
                       aria-labelledby="edit-profile-tab"
                       class="tab-pane fade show active"
                     >
-                      <h4 class="mb-4 fw-bold text-dark-blue">Edit Profile Information</h4>
+                      <h4 class="mb-3 mb-md-4 fw-bold text-dark-blue fs-5 fs-md-4">Edit Profile Information</h4>
                       <form id="edit-profile-form" novalidate>
-                        <div class="mb-3">
-                          <label for="username" class="form-label">Username</label>
-                          <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            class="form-control form-control-lg" value="${user.username}"
-                            required
-                          />
-                          <small id="username-error" class="text-danger d-none"></small>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="mb-3">
+                              <label for="username" class="form-label fw-medium">Username</label>
+                              <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                class="form-control form-control-lg" 
+                                value="${user.username}"
+                                required
+                              />
+                              <small id="username-error" class="text-danger d-none"></small>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <div class="mb-4">
+                              <label for="email" class="form-label fw-medium">Email</label>
+                              <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control form-control-lg" 
+                                value="${user.email}"
+                                required
+                              />
+                              <small id="email-error" class="text-danger d-none"></small>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2 mt-md-3" disabled>
+                              <i class="bi bi-check-circle me-2"></i>Save Changes
+                            </button>
+                          </div>
                         </div>
-                        <div class="mb-4">
-                          <label for="email" class="form-label">Email</label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="form-control form-control-lg" value="${user.email}"
-                            required
-                          />
-                          <small id="email-error" class="text-danger d-none"></small>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" disabled>Save Changes</button>
                       </form>
                     </section>
 
+                    <!-- Change Password Section -->
                     <section
                       id="change-password-section"
                       role="tabpanel"
                       aria-labelledby="change-password-tab"
                       class="tab-pane fade"
                     >
-                      <h4 class="mb-4 fw-bold text-dark-blue">Change Your Password</h4>
+                      <h4 class="mb-3 mb-md-4 fw-bold text-dark-blue fs-5 fs-md-4">Change Your Password</h4>
                       <form id="change-password-form" novalidate>
-                        <div class="mb-3">
-                          <label for="oldPassword" class="form-label">Old Password</label>
-                          <input type="password" id="oldPassword" name="oldPassword" class="form-control form-control-lg" required />
-                          <small id="oldPassword-error" class="text-danger d-none"></small>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="mb-3">
+                              <label for="oldPassword" class="form-label fw-medium">Old Password</label>
+                              <input type="password" id="oldPassword" name="oldPassword" class="form-control form-control-lg" required />
+                              <small id="oldPassword-error" class="text-danger d-none"></small>
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="mb-3">
+                              <label for="newPassword" class="form-label fw-medium">New Password</label>
+                              <input type="password" id="newPassword" name="newPassword" class="form-control form-control-lg" required />
+                              <small id="newPassword-error" class="text-danger d-none"></small>
+                            </div>
+                          </div>
+                          <div class="col-12 col-sm-6">
+                            <div class="mb-4">
+                              <label for="confirmNewPassword" class="form-label fw-medium">Confirm New Password</label>
+                              <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control form-control-lg" required />
+                              <small id="confirmNewPassword-error" class="text-danger d-none"></small>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2 mt-md-3" disabled>
+                              <i class="bi bi-shield-lock me-2"></i>Change Password
+                            </button>
+                          </div>
                         </div>
-                        <div class="mb-3">
-                          <label for="newPassword" class="form-label">New Password</label>
-                          <input type="password" id="newPassword" name="newPassword" class="form-control form-control-lg" required />
-                          <small id="newPassword-error" class="text-danger d-none"></small>
-                        </div>
-                        <div class="mb-4">
-                          <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
-                          <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control form-control-lg" required />
-                          <small id="confirmNewPassword-error" class="text-danger d-none"></small>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" disabled>Change Password</button>
                       </form>
                     </section>
                   </div>
                 </div>
               </div>
-              <p class="mt-4 text-center fw-bold
-                ${feedback.type === 'error' ? 'text-danger' : ''}
-                ${feedback.type === 'success' ? 'text-success' : ''}
-                ${feedback.type === 'info' ? 'text-info' : ''}
-                ${feedback.message ? '' : 'd-none'}"
-                id="feedback-message">
-                ${feedback.message}
-              </p>
+              
+              <!-- Feedback Message -->
+              <div class="row mt-3 mt-md-4">
+                <div class="col-12">
+                  <p class="text-center fw-bold mb-0
+                    ${feedback.type === 'error' ? 'text-danger' : ''}
+                    ${feedback.type === 'success' ? 'text-success' : ''}
+                    ${feedback.type === 'info' ? 'text-info' : ''}
+                    ${feedback.message ? '' : 'd-none'}"
+                    id="feedback-message">
+                    ${feedback.message}
+                  </p>
+                </div>
+              </div>
 
-              <div class="text-center mt-4">
-                <a href="#/main" class="text-decoration-none text-brand-primary fw-medium"><i class="bi bi-arrow-left me-2"></i> Back to Home</a>
+              <!-- Back to Home Link -->
+              <div class="row mt-3 mt-md-4">
+                <div class="col-12 text-center">
+                  <a href="#/main" class="text-decoration-none text-brand-primary fw-medium">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                  </a>
+                </div>
               </div>
             </div>
           </div>
