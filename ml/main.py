@@ -240,7 +240,7 @@ class CVJobMatcher:
         Load model dari folder ml/
         """
         try:
-            ml_folder = "ml"
+            ml_folder = os.path.join("ml", "models")
             base_path = os.path.join(ml_folder, model_name)
             
             required_files = [
