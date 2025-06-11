@@ -85,4 +85,4 @@ def match_cv_endpoint():
 # Menjalankan server
 if __name__ == '__main__':
     # Gunakan port 5001 agar tidak bentrok dengan server Node.js (3000)
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
