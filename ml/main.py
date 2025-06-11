@@ -324,5 +324,5 @@ def main():
         test_matches = new_matcher.find_matching_jobs(cv_text, top_k=3)
         print(f"Test with loaded model: {len(test_matches)} matches found")
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
