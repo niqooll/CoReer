@@ -237,7 +237,7 @@ class CVJobMatcher:
     
     def load_model(self, model_name):
         """
-        Load model dari folder ml/
+        Load model dari folder ml/models
         """
         try:
             ml_folder = os.path.join("ml", "models")
