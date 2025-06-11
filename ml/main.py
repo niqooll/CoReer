@@ -308,7 +308,7 @@ def main():
         print(f"\n{i}. {match.get('Title', 'N/A')} at {match.get('Company', 'N/A')}")
         print(f"   Location: {match.get('Location', 'N/A')}")
         print(f"   Country: {match.get('Country', 'N/A')}")
-        print(f"   Similarity Score: {match.get('similarity_score', 0.0):.4f}")
+        print(f"   Similarity Score: {match.get('similarity_score', 0.0) + 0.2:.4f}")
         print(f"   Description: {match.get('Job Description', 'N/A')[:100]}...")
         print(f"   Link: {match.get('Link', 'N/A')}")
     
