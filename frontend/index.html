@@ -4,15 +4,15 @@
   <meta charset="UTF-8" />
   <title>CoReer SPA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/brands.min.css">
 </head>
 <body>
   <header>
     <nav class="navbar navbar-expand-lg custom-navbar">
       <div class="container">
-        <!-- Brand/Logo -->
         <a class="navbar-brand me-4" href="#/">CoReer</a>
-
-        <!-- Mobile Menu Toggler (Hamburger Button) -->
         <button
           class="navbar-toggler"
           type="button"
@@ -40,10 +40,6 @@
             <li class="nav-item" id="register-link">
               <a class="nav-link" href="#/register">Register</a>
             </li>
-
-            <!-- Profile Dropdown for Desktop -->
-            <!-- d-none makes it hidden by default. Removed d-lg-block to allow JS to control display. -->
-            <!-- JavaScript will add/remove 'd-none' based on login status. -->
             <li class="nav-item dropdown d-none" id="profile-dropdown-desktop">
               <a
                 class="nav-link dropdown-toggle"
@@ -66,10 +62,8 @@
                 </li>
               </ul>
             </li>
-
-            <!-- Profile Links for Mobile -->
             <li class="nav-item d-none" id="profile-links-mobile">
-              <div class="d-lg-none"> <!-- Wrap mobile content in d-lg-none -->
+              <div class="d-lg-none">
                 <a class="nav-link fw-bold" href="#/edit-profile">Profile Settings</a>
                 <ul class="navbar-nav ps-3 w-100">
                   <li class="nav-item"><a class="nav-link" href="#/edit-profile">Edit Profile</a></li>
@@ -89,21 +83,32 @@
   </header>
 
   <div id="app"></div>
-
-  <!-- Script utama aplikasi Anda, diasumsikan sudah termasuk Bootstrap JS -->
   <script src="dist/bundle.js"></script>
 
-  <footer class="custom-footer py-3 mt-4">
-    <div class="container">
-      <div class="text-center">
-        <!-- Terms and Privacy - Atas (Lebih Besar) -->
-        <div class="text-white mb-2">
-          By using <strong>CoReer</strong> you agree to the Terms and Privacy.
+  <footer class="custom-footer py-3">
+    <div class="container-fluid px-3">
+      <div class="d-flex justify-content-between align-items-center footer-content">
+        <div class="d-flex align-items-center gap-3">
+          <span class="text-white">Contact us on</span>
+          <div class="social-icons">
+            <a href="#" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" aria-label="X (Twitter)">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+          </div>
         </div>
-        
-        <!-- Contact Information - Bawah (Lebih Kecil) -->
-        <div class="text-white" style="font-size: 12px;">
-          Contact us on <a href="mailto:support@coreer.com" class="footer-link">support@coreer.com</a>
+        <div class="text-center flex-grow-1 mx-3">
+          <span class="text-white">
+            By using <strong>CoReer</strong> you agree to the Terms and Privacy.
+          </span>
+        </div>
+        <div class="text-white">
+          Capstone Project
         </div>
       </div>
     </div>

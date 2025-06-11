@@ -1994,3 +1994,47 @@ footer.custom-footer p {
         transform: none !important;
     }
 }
+
+ .custom-footer {
+      background: linear-gradient(135deg, #4a90a4 0%, #357a8a 100%);
+      color: white;
+      margin-top: auto;
+    }
+    
+    .footer-link {
+      color: #a8d0dc;
+      text-decoration: none;
+    }
+    
+    .footer-link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .social-icons a {
+      color: white;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+    
+    .social-icons a:hover {
+      color: #a8d0dc;
+    }
+    
+    @media (max-width: 768px) {
+      .footer-content {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .social-icons {
+        justify-content: center;
+      }
+    }
