@@ -82,6 +82,13 @@ def match_cv_endpoint():
 
     return jsonify({"error": "File tidak valid"}), 400
 
+@app.route('/')
+def index():
+    return {
+        "message": "CoReer CV Matching API is running!",
+        "available_endpoints": ["/match (POST)"]
+    }
+
 # Menjalankan server
 if __name__ == '__main__':
     # Gunakan port 5001 agar tidak bentrok dengan server Node.js (3000)
