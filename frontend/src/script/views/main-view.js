@@ -111,7 +111,7 @@ export function renderMainPage(user, errorMessage = '') {
                                     <div class="tab-pane fade py-4" id="matching-jobs-pane" role="tabpanel" aria-labelledby="jobs-tab">
                                         <p class="text-muted text-center m-0" id="jobs-placeholder">Daftar pekerjaan yang cocok akan ditampilkan di sini.</p>
                                         <div id="matching-jobs-list" style="max-height: 450px; overflow-y: auto;">
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -239,7 +239,6 @@ export function bindAnalyzeButton(callback) {
 
             // Selalu aktifkan tab "Hasil Analisis CV" saat analisis dimulai
             if (resultTab) {
-                // Tambahkan pengecekan di sini
                 if (window.bootstrap && window.bootstrap.Tab) {
                     const bsTab = new window.bootstrap.Tab(resultTab);
                     bsTab.show();
@@ -301,16 +300,47 @@ export function displayMatchingJobs(jobs) {
 
             const title = job.Title || 'Tidak Ada Judul';
             const company = job.Company || 'Tidak Diketahui';
-            const location = job.Location || '';
-            const city = job.City || '';
-            const region = job.Region || '';
-            const country = job.Country || '';
             const similarityScore = (job.similarity_score * 100).toFixed(2);
             const fullDescription = job['Job Description'] || 'Deskripsi pekerjaan tidak tersedia.';
             const shortDescription = fullDescription.substring(0, 150) + (fullDescription.length > 150 ? '...' : '');
             const link = job.Link && job.Link !== '#' ? job.Link : '#';
 
-            const displayLocation = [location, city, region, country].filter(Boolean).join(', ');
+            // --- BAGIAN PERBAIKAN UNTUK LOKASI ---
+            let primaryLocation = job.Location || '';
+            let secondaryLocationParts = [];
+
+            // Fungsi pembantu untuk memeriksa apakah string sudah terkandung
+            const containsCaseInsensitive = (mainStr, subStr) => {
+                return mainStr.toLowerCase().includes(subStr.toLowerCase());
+            };
+
+            // Tambahkan City, Region, Country jika belum ada di primaryLocation dan tidak kosong
+            if (job.City && !containsCaseInsensitive(primaryLocation, job.City)) {
+                secondaryLocationParts.push(job.City);
+            }
+            if (job.Region && !containsCaseInsensitive(primaryLocation, job.Region)) {
+                secondaryLocationParts.push(job.Region);
+            }
+            if (job.Country && !containsCaseInsensitive(primaryLocation, job.Country)) {
+                secondaryLocationParts.push(job.Country);
+            }
+
+            // Gabungkan primaryLocation dengan secondaryLocationParts (jika ada dan berbeda)
+            let displayLocation = primaryLocation;
+            if (secondaryLocationParts.length > 0) {
+                if (displayLocation) { // Jika primaryLocation sudah ada, tambahkan koma
+                    displayLocation += ', ';
+                }
+                displayLocation += secondaryLocationParts.filter(Boolean).join(', ');
+            }
+            // Pastikan tidak ada koma di awal jika primaryLocation kosong dan secondaryLocationParts juga kosong
+            if (displayLocation.startsWith(', ')) {
+                displayLocation = displayLocation.substring(2);
+            }
+            if (!displayLocation) {
+                displayLocation = 'Lokasi Tidak Diketahui'; // Fallback jika semua kosong
+            }
+            // --- AKHIR BAGIAN PERBAIKAN LOKASI ---
 
             jobCard.innerHTML = `
                 <div class="card-body">

@@ -16,7 +16,6 @@
   --sec-normal: var(--brand-secondary);
 }
 
-/* GLOBAL RESET - Lebih agresif */
 * {
     box-sizing: border-box; /* Penting untuk perhitungan lebar/tinggi */
     margin: 0; /* Hapus semua margin default */

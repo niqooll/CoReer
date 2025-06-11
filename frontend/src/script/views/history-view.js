@@ -56,8 +56,7 @@ export function renderHistoryPage(historyData = [], errorMessage = '', currentSe
 
                 ${errorMessage ? `<p class="alert alert-danger text-center animate-fade-in mx-2 mx-md-0">${errorMessage}</p>` : ''}
 
-                <div class="row g-2 g-md-3"> 
-                    <!-- Sidebar History - Full width on mobile, 1/3 on desktop -->
+                <div class="row g-2 g-md-3">
                     <div class="col-12 col-lg-4 order-1 order-lg-1">
                         <div class="card shadow-sm animate-slide-right-fade border-0 rounded-3 rounded-md-4 mb-3 mb-lg-0" style="background-color: var(--sec-normal);">
                             <div class="card-header text-white rounded-top-3 rounded-md-top-4 py-2 py-md-3" style="background-color: var(--normal);">
@@ -73,11 +72,11 @@ export function renderHistoryPage(historyData = [], errorMessage = '', currentSe
                                         : histories.map((entry) => `
                                             <a href="#" class="list-group-item list-group-item-action py-2 py-md-3 px-2 px-md-3 mb-2 rounded-3 shadow-sm history-sidebar-item ${entry.id === currentSelectedHistoryId ? 'active' : ''}" data-id="${entry.id}" style="background-color: var(--bs-pink-highlight-bg);">
                                                 <div class="d-flex w-100 justify-content-between align-items-start">
-                                                    <div class="flex-grow-1 me-2">
+                                                    <div class="flex-grow-1 me-2 overflow-hidden">
                                                         <h6 class="mb-1 text-dark-blue fs-6 text-truncate">${entry.cv_filename || `Analisis #${entry.id}`}</h6>
                                                         <small class="text-secondary d-block">Analisis pada: ${entry.analysis_date ? format(new Date(entry.analysis_date), 'dd/MM/yyyy HH:mm') : 'N/A'}</small>
                                                     </div>
-                                                    <div class="d-flex flex-column align-items-end">
+                                                    <div class="d-flex flex-column align-items-end flex-shrink-0 ms-2">
                                                         <small class="text-muted d-none d-sm-block">${entry.analysis_date ? format(new Date(entry.analysis_date), 'dd/MM') : 'N/A'}</small>
                                                         <button class="btn btn-sm btn-outline-danger delete-history-btn mt-1 mt-md-2 px-2" data-id="${entry.id}">
                                                             <i class="bi bi-trash fs-6"></i><span class="d-none d-sm-inline ms-1"> Hapus</span>
@@ -92,7 +91,6 @@ export function renderHistoryPage(historyData = [], errorMessage = '', currentSe
                         </div>
                     </div>
 
-                    <!-- Job Recommendations - Full width on mobile, 2/3 on desktop -->
                     <div class="col-12 col-lg-8 order-2 order-lg-2">
                         <div class="card shadow-sm h-100 animate-slide-left-fade border-0 rounded-3 rounded-md-4" style="background-color: var(--sec-normal); min-height: 400px;">
                             <div class="card-header text-white rounded-top-3 rounded-md-top-4 py-2 py-md-3" style="background-color: var(--dark);">
