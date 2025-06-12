@@ -7,11 +7,11 @@ const Jwt = require('@hapi/jwt');
 const init = async () => {
   // Pastikan koneksi database berhasil sebelum memulai server
   await testConnection();
-  console.log('Koneksi database berhasil.'); // Log untuk konfirmasi koneksi DB
+  console.log('Koneksi database berhasil.'); 
 
   const server = Hapi.server({
-    port: process.env.PORT, // UBAH: Hapus `|| 3000`. Biarkan Railway yang menentukan port.
-    host: '0.0.0.0',       // UBAH: Setel host secara eksplisit ke '0.0.0.0'
+    port: process.env.PORT,
+    host: '0.0.0.0',      
     routes: {
       cors: {
         origin: ['*'],

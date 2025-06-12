@@ -5,7 +5,7 @@ const AnalysisHistory = require('../models/AnalysisHistory');
 const { getCurrentUser } = require('../models/userModel');
 
 // URL layanan ML Flask. Sebaiknya simpan di file .env untuk produksi.
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001/match';
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'https://coreer-ml-service-fda2cqapbxbsemg4.southeastasia-01.azurewebsites.net/match';
 
 const matchCV = async (request, h) => {
   const { cv } = request.payload;
