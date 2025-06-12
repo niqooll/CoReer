@@ -61,8 +61,9 @@ CoReer/
 │ │ └── 🎨 styles/ # 🎀 Styling CSS (Bootstrap & custom)
 │ ├── 📁 node_modules/
 │ ├── 📄 package.json # 📌 Dependensi & script frontend
-│ ├── ⚙️ webpack.config.js # 🔧 Konfigurasi Webpack
-│ └── 📜 .babelrc # 🔄 Transpilasi ES6+ via Babel
+│ ├── ⚙️ webpack.dev.js # 🔧 Konfigurasi Webpack Dev
+│ └── ⚙️ webpack.prod.js # 🔧 Konfigurasi Webpack Prod
+│ └── ⚙️ webpack.common.js # 🔧 Konfigurasi Webpack 
 
 ├── 🤖 ml-service/ # 🧠 Layanan Machine Learning (Python + Flask)
 │ ├── 🧩 app.py # 🚀 API endpoint untuk parsing & rekomendasi CV
