@@ -10,8 +10,8 @@ const init = async () => {
   console.log('Koneksi database berhasil.'); // Log untuk konfirmasi koneksi DB
 
   const server = Hapi.server({
-    port: process.env.PORT || 3000,
-    host: process.env.HOST || 'localhost',
+    port: process.env.PORT, // UBAH: Hapus `|| 3000`. Biarkan Railway yang menentukan port.
+    host: '0.0.0.0',       // UBAH: Setel host secara eksplisit ke '0.0.0.0'
     routes: {
       cors: {
         origin: ['*'],
@@ -63,11 +63,12 @@ const init = async () => {
   // Log ini berguna untuk verifikasi rute saat startup, tetapi bisa dihapus untuk produksi yang sangat ringkas
   // console.log('Routes terdaftar:');
   // server.table().forEach(route => {
-  //   console.log(`${route.method.toUpperCase()} ${route.path}`);
+  //   console.log(`${route.method.toUpperCase()} ${route.path}`);
   // });
 
   await server.start();
-  console.log(`🚀 Server berjalan di: ${server.info.uri}`); // Log penting untuk konfirmasi startup server
+  // Ini akan mencetak URL yang benar dari Railway, bukan localhost
+  console.log(`🚀 Server berjalan di: ${server.info.uri}`);
 };
 
 // Tangani rejection yang tidak tertangani untuk menghindari proses crash
