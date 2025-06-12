@@ -240,8 +240,6 @@ export function bindAnalyzeButton(callback) {
                 if (window.bootstrap && window.bootstrap.Tab) {
                     const bsTab = new window.bootstrap.Tab(resultTab);
                     bsTab.show();
-                } else {
-                    console.error('Komponen Bootstrap Tab tidak tersedia pada window.bootstrap.');
                 }
             }
 

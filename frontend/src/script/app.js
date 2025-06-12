@@ -5,7 +5,7 @@ class App {
   constructor({ appContainerId = 'app' } = {}) {
     this.appContainer = document.getElementById(appContainerId);
     this.publicRoutes = ['/', '/login', '/register', '/FAQ'];
-    this._bindEvents();
+    this._bindEvents(); // Pastikan ini dipanggil di konstruktor
 
     this.routePresenters = {
       '/': import('./presenters/landing-presenter.js').then(m => m.default),
@@ -20,6 +20,7 @@ class App {
   }
 
   _bindEvents() {
+    // Event listener untuk tombol logout (desktop dan mobile)
     const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
     const logoutBtnMobile = document.getElementById('logout-btn-mobile');
 
@@ -36,6 +37,7 @@ class App {
       });
     }
 
+    // Event listener untuk perubahan hash URL dan DOMContentLoaded
     window.addEventListener('hashchange', () => {
       this.updateNavLinks();
       this.renderPage();
@@ -45,6 +47,35 @@ class App {
       this.updateNavLinks();
       this.renderPage();
     });
+
+    // --- LOGIKA BARU UNTUK MENUTUP DRAWER NAVIGASI DI MOBILE ---
+    const navbarToggler = document.querySelector('.navbar-toggler');
+    const navbarCollapse = document.getElementById('navbarNav');
+
+    // Pastikan elemen-elemennya ada sebelum menambahkan event listener
+    if (navbarCollapse && navbarToggler) {
+      // Dapatkan semua nav-link di dalam navbar-collapse
+      const navLinksInDrawer = navbarCollapse.querySelectorAll('.nav-link');
+
+      // Iterasi setiap link dan tambahkan event listener
+      navLinksInDrawer.forEach(link => {
+        link.addEventListener('click', () => {
+          // Periksa apakah drawer sedang terbuka (memiliki class 'show')
+          // dan apakah itu di mode mobile (navbarToggler terlihat)
+          const isDrawerOpen = navbarCollapse.classList.contains('show');
+          // Memeriksa display style dari toggler untuk menentukan mode mobile
+          // display: 'none' berarti desktop, selain itu (misal 'block') berarti mobile
+          const isTogglerVisible = window.getComputedStyle(navbarToggler).display !== 'none';
+
+          if (isDrawerOpen && isTogglerVisible) {
+            // Jika drawer terbuka di mode mobile, picu klik pada toggler
+            // untuk menutup drawer secara otomatis
+            navbarToggler.click();
+          }
+        });
+      });
+    }
+    // --- AKHIR LOGIKA BARU ---
   }
 
   updateNavLinks() {
@@ -140,6 +171,8 @@ class App {
   }
 
   confirmLogout() {
+    // PERHATIAN: window.confirm tidak direkomendasikan dalam iframe Canvas.
+    // Sebaiknya ganti dengan modal UI kustom jika ini adalah aplikasi di Canvas.
     const isConfirmed = window.confirm('Apakah Anda yakin ingin keluar dari akun?');
     if (isConfirmed) {
       this.logout();

@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     logoImg.alt = 'CoReer Logo';
     logoImg.className = 'logo-image';
 
-    brandLink.innerHTML = ''; // Hapus teks "CoReer"
-    brandLink.appendChild(logoImg); // Ganti dengan gambar logo
+    brandLink.innerHTML = ''; 
+    brandLink.appendChild(logoImg); 
   }
 
   const app = new App();
