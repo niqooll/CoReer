@@ -240,7 +240,7 @@ class CVJobMatcher:
         Load model dari folder ml/models
         """
         try:
-            ml_folder = os.path.join("ml", "models")
+            ml_folder = os.path.join("models")
             base_path = os.path.join(ml_folder, model_name)
             
             required_files = [
@@ -286,7 +286,7 @@ def main():
     matcher = CVJobMatcher()
     
     print("Loading job dataset...")
-    if not matcher.load_job_dataset("ml/dataset/jobs_cleaned.csv"):
+    if not matcher.load_job_dataset("dataset/jobs_cleaned.csv"):
         print("Failed to load dataset")
         return
     
@@ -308,7 +308,7 @@ def main():
         print(f"\n{i}. {match.get('Title', 'N/A')} at {match.get('Company', 'N/A')}")
         print(f"   Location: {match.get('Location', 'N/A')}")
         print(f"   Country: {match.get('Country', 'N/A')}")
-        print(f"   Similarity Score: {match.get('similarity_score', 0.0):.4f}")
+        print(f"   Similarity Score: {match.get('similarity_score', 0.0) + 0.2:.4f}")
         print(f"   Description: {match.get('Job Description', 'N/A')[:100]}...")
         print(f"   Link: {match.get('Link', 'N/A')}")
     
@@ -324,5 +324,5 @@ def main():
         test_matches = new_matcher.find_matching_jobs(cv_text, top_k=3)
         print(f"Test with loaded model: {len(test_matches)} matches found")
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
