@@ -1,5 +1,3 @@
-// src/script/views/main-view.js
-
 export function renderMainPage(user, errorMessage = '') {
 
     return `
@@ -153,7 +151,7 @@ export function bindUploadAndPreview(onFileSelected) {
             }
             const fileURL = URL.createObjectURL(file);
             previewContainer.innerHTML = `<iframe src="${fileURL}" width="100%" height="100%" style="border:none;"></iframe>`;
-            
+
             if (previewPlaceholder) previewPlaceholder.style.display = 'none';
 
             updateAnalyzeButton(true);
@@ -243,7 +241,7 @@ export function bindAnalyzeButton(callback) {
                     const bsTab = new window.bootstrap.Tab(resultTab);
                     bsTab.show();
                 } else {
-                    console.error('Bootstrap Tab component not available on window.bootstrap.');
+                    console.error('Komponen Bootstrap Tab tidak tersedia pada window.bootstrap.');
                 }
             }
 
@@ -298,15 +296,16 @@ export function displayMatchingJobs(jobs) {
             jobCard.classList.add('card', 'mb-3', 'shadow-sm', 'animate-fade-in', 'border-0', 'rounded-3');
             jobCard.style.animationDelay = `${0.1 * index}s`;
 
-            const title = job.Title || 'Tidak Ada Judul';
-            const company = job.Company || 'Tidak Diketahui';
+            // Menerapkan toLowerCase() untuk detail pekerjaan
+            const title = (job.Title || 'tidak ada judul').toLowerCase();
+            const company = (job.Company || 'tidak diketahui').toLowerCase();
             const similarityScore = (job.similarity_score * 100).toFixed(2);
-            const fullDescription = job['Job Description'] || 'Deskripsi pekerjaan tidak tersedia.';
+            const fullDescription = (job['Job Description'] || 'deskripsi pekerjaan tidak tersedia.').toLowerCase();
             const shortDescription = fullDescription.substring(0, 150) + (fullDescription.length > 150 ? '...' : '');
             const link = job.Link && job.Link !== '#' ? job.Link : '#';
 
             // --- BAGIAN PERBAIKAN UNTUK LOKASI ---
-            let primaryLocation = job.Location || '';
+            let primaryLocation = (job.Location || '').toLowerCase();
             let secondaryLocationParts = [];
 
             // Fungsi pembantu untuk memeriksa apakah string sudah terkandung
@@ -316,13 +315,13 @@ export function displayMatchingJobs(jobs) {
 
             // Tambahkan City, Region, Country jika belum ada di primaryLocation dan tidak kosong
             if (job.City && !containsCaseInsensitive(primaryLocation, job.City)) {
-                secondaryLocationParts.push(job.City);
+                secondaryLocationParts.push(job.City.toLowerCase());
             }
             if (job.Region && !containsCaseInsensitive(primaryLocation, job.Region)) {
-                secondaryLocationParts.push(job.Region);
+                secondaryLocationParts.push(job.Region.toLowerCase());
             }
             if (job.Country && !containsCaseInsensitive(primaryLocation, job.Country)) {
-                secondaryLocationParts.push(job.Country);
+                secondaryLocationParts.push(job.Country.toLowerCase());
             }
 
             // Gabungkan primaryLocation dengan secondaryLocationParts (jika ada dan berbeda)
@@ -338,7 +337,7 @@ export function displayMatchingJobs(jobs) {
                 displayLocation = displayLocation.substring(2);
             }
             if (!displayLocation) {
-                displayLocation = 'Lokasi Tidak Diketahui'; // Fallback jika semua kosong
+                displayLocation = 'lokasi tidak diketahui'; // Fallback jika semua kosong
             }
             // --- AKHIR BAGIAN PERBAIKAN LOKASI ---
 
