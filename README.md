@@ -38,7 +38,7 @@ CoReer dibangun menggunakan kombinasi teknologi modern di tiga lapisan utama: Fr
 ## 🗂️ Struktur Proyek
 
 Repositori **CoReer** ini terdiri dari tiga komponen utama: `frontend`, `backend`, dan `ml-service`. Setiap komponen memiliki lingkungan dan dependensinya sendiri.
-
+```
 CoReer/
 ├── 📦 backend/ # 🌐 Hapi.js RESTful API server
 │ ├── 📂 src/
@@ -74,3 +74,4 @@ CoReer/
 ├── 🚫 .gitignore # 📂 File & folder yang diabaikan Git
 ├── 📄 LICENSE # 📜 Lisensi open-source
 └── 📘 README.md # 📝 Dokumentasi proyek (file ini!)
+```
