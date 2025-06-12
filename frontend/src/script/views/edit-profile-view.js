@@ -4,39 +4,37 @@ import { bindFormValidation, isNotEmpty, isValidEmail, isStrongPassword, arePass
 // Ubah parameter errorMessage menjadi feedback object
 export function showEditProfile(container, user, feedback = { type: '', message: '' }, onSubmit, onSubmitPassword) {
   container.innerHTML = `
-    <div class="container-fluid px-3 px-md-4 my-3 my-md-5 py-3 py-md-5">
-      <h2 class="text-center mb-4 mb-md-5 fw-bold text-dark-blue display-6 display-md-5 animate-slide-up">My Account</h2>
+    <div class="container-fluid px-2 px-sm-3 px-md-4 my-2 my-sm-3 my-md-5 py-2 py-sm-3 py-md-5">
+      <h2 class="text-center mb-3 mb-sm-4 mb-md-5 fw-bold text-dark-blue display-6 display-md-5 animate-slide-up">My Account</h2>
       <div class="row justify-content-center">
         <div class="col-12 col-lg-10 col-xl-9">
-          <div class="card p-2 p-sm-3 p-md-4 shadow-lg border-0 rounded-4 profile-card animate-fade-in">
-            <div class="card-body p-2 p-sm-3">
-              <div class="row g-3 g-md-4">
+          <div class="card p-1 p-sm-2 p-md-4 shadow-lg border-0 rounded-4 profile-card animate-fade-in">
+            <div class="card-body p-1 p-sm-2 p-md-3">
+              <div class="row g-2 g-sm-3 g-md-4">
                 <!-- Sidebar Navigation -->
-                <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0 position-relative">
-                  <div class="list-group list-group-flush profile-tabs d-flex d-md-block flex-row flex-md-column" id="profile-section-tabs" role="tablist" aria-label="Profile sections">
+                <div class="col-12 col-md-4 col-lg-3 mb-2 mb-sm-3 mb-md-0 position-relative">
+                  <div class="list-group list-group-flush profile-tabs d-flex d-md-block flex-row flex-md-column gap-1 gap-md-0" id="profile-section-tabs" role="tablist" aria-label="Profile sections">
                     <button
-                      class="list-group-item list-group-item-action active rounded-3 mb-0 mb-md-2 me-2 me-md-0 flex-fill flex-md-auto text-center text-md-start"
+                      class="list-group-item list-group-item-action active rounded-3 mb-0 mb-md-2 flex-fill flex-md-auto text-center text-md-start py-2 py-sm-3"
                       id="edit-profile-tab"
                       type="button"
                       role="tab"
                       aria-selected="true"
                       aria-controls="edit-profile-section"
                     >
-                      <i class="bi bi-person-fill me-0 me-md-2 d-block d-md-inline"></i> 
-                      <span class="d-none d-sm-inline">Edit Profile</span>
-                      <span class="d-sm-none">Profile</span>
+                      <i class="bi bi-person-fill me-0 me-md-2 d-block d-md-inline mb-1 mb-md-0"></i> 
+                      <span class="d-block d-sm-inline small">Profile</span>
                     </button>
                     <button
-                      class="list-group-item list-group-item-action rounded-3 mb-0 mb-md-2 flex-fill flex-md-auto text-center text-md-start"
+                      class="list-group-item list-group-item-action rounded-3 mb-0 mb-md-2 flex-fill flex-md-auto text-center text-md-start py-2 py-sm-3"
                       id="change-password-tab"
                       type="button"
                       role="tab"
                       aria-selected="false"
                       aria-controls="change-password-section"
                     >
-                      <i class="bi bi-key-fill me-0 me-md-2 d-block d-md-inline"></i> 
-                      <span class="d-none d-sm-inline">Change Password</span>
-                      <span class="d-sm-none">Password</span>
+                      <i class="bi bi-key-fill me-0 me-md-2 d-block d-md-inline mb-1 mb-md-0"></i> 
+                      <span class="d-block d-sm-inline small">Password</span>
                     </button>
                   </div>
                 </div>
@@ -51,40 +49,42 @@ export function showEditProfile(container, user, feedback = { type: '', message:
                       aria-labelledby="edit-profile-tab"
                       class="tab-pane fade show active"
                     >
-                      <h4 class="mb-3 mb-md-4 fw-bold text-dark-blue fs-5 fs-md-4">Edit Profile Information</h4>
+                      <h4 class="mb-2 mb-sm-3 mb-md-4 fw-bold text-dark-blue fs-6 fs-sm-5 fs-md-4">Edit Profile Information</h4>
                       <form id="edit-profile-form" novalidate>
                         <div class="row">
                           <div class="col-12">
-                            <div class="mb-3">
-                              <label for="username" class="form-label fw-medium">Username</label>
+                            <div class="mb-2 mb-sm-3">
+                              <label for="username" class="form-label fw-medium small">Username</label>
                               <input
                                 type="text"
                                 id="username"
                                 name="username"
-                                class="form-control form-control-lg" 
+                                class="form-control form-control-sm form-control-md-lg px-2 px-sm-3" 
                                 value="${user.username}"
                                 required
+                                style="text-align: left !important;"
                               />
                               <small id="username-error" class="text-danger d-none"></small>
                             </div>
                           </div>
                           <div class="col-12">
-                            <div class="mb-4">
-                              <label for="email" class="form-label fw-medium">Email</label>
+                            <div class="mb-3 mb-sm-4">
+                              <label for="email" class="form-label fw-medium small">Email</label>
                               <input
                                 type="email"
                                 id="email"
                                 name="email"
-                                class="form-control form-control-lg" 
+                                class="form-control form-control-sm form-control-md-lg px-2 px-sm-3" 
                                 value="${user.email}"
                                 required
+                                style="text-align: left !important;"
                               />
                               <small id="email-error" class="text-danger d-none"></small>
                             </div>
                           </div>
                           <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2 mt-md-3" disabled>
-                              <i class="bi bi-check-circle me-2"></i>Save Changes
+                            <button type="submit" class="btn btn-primary btn-sm btn-md-lg w-100 mt-1 mt-sm-2 mt-md-3 py-2 py-sm-3" disabled>
+                              <i class="bi bi-check-circle me-1 me-sm-2"></i>Save Changes
                             </button>
                           </div>
                         </div>
@@ -98,33 +98,54 @@ export function showEditProfile(container, user, feedback = { type: '', message:
                       aria-labelledby="change-password-tab"
                       class="tab-pane fade"
                     >
-                      <h4 class="mb-3 mb-md-4 fw-bold text-dark-blue fs-5 fs-md-4">Change Your Password</h4>
+                      <h4 class="mb-2 mb-sm-3 mb-md-4 fw-bold text-dark-blue fs-6 fs-sm-5 fs-md-4">Change Your Password</h4>
                       <form id="change-password-form" novalidate>
                         <div class="row">
                           <div class="col-12">
-                            <div class="mb-3">
-                              <label for="oldPassword" class="form-label fw-medium">Old Password</label>
-                              <input type="password" id="oldPassword" name="oldPassword" class="form-control form-control-lg" required />
+                            <div class="mb-2 mb-sm-3">
+                              <label for="oldPassword" class="form-label fw-medium small">Old Password</label>
+                              <input 
+                                type="password" 
+                                id="oldPassword" 
+                                name="oldPassword" 
+                                class="form-control form-control-sm form-control-md-lg px-2 px-sm-3" 
+                                required 
+                                style="text-align: left !important;"
+                              />
                               <small id="oldPassword-error" class="text-danger d-none"></small>
                             </div>
                           </div>
                           <div class="col-12 col-sm-6">
-                            <div class="mb-3">
-                              <label for="newPassword" class="form-label fw-medium">New Password</label>
-                              <input type="password" id="newPassword" name="newPassword" class="form-control form-control-lg" required />
+                            <div class="mb-2 mb-sm-3">
+                              <label for="newPassword" class="form-label fw-medium small">New Password</label>
+                              <input 
+                                type="password" 
+                                id="newPassword" 
+                                name="newPassword" 
+                                class="form-control form-control-sm form-control-md-lg px-2 px-sm-3" 
+                                required 
+                                style="text-align: left !important;"
+                              />
                               <small id="newPassword-error" class="text-danger d-none"></small>
                             </div>
                           </div>
                           <div class="col-12 col-sm-6">
-                            <div class="mb-4">
-                              <label for="confirmNewPassword" class="form-label fw-medium">Confirm New Password</label>
-                              <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control form-control-lg" required />
+                            <div class="mb-3 mb-sm-4">
+                              <label for="confirmNewPassword" class="form-label fw-medium small">Confirm New Password</label>
+                              <input 
+                                type="password" 
+                                id="confirmNewPassword" 
+                                name="confirmNewPassword" 
+                                class="form-control form-control-sm form-control-md-lg px-2 px-sm-3" 
+                                required 
+                                style="text-align: left !important;"
+                              />
                               <small id="confirmNewPassword-error" class="text-danger d-none"></small>
                             </div>
                           </div>
                           <div class="col-12">
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-2 mt-md-3" disabled>
-                              <i class="bi bi-shield-lock me-2"></i>Change Password
+                            <button type="submit" class="btn btn-primary btn-sm btn-md-lg w-100 mt-1 mt-sm-2 mt-md-3 py-2 py-sm-3" disabled>
+                              <i class="bi bi-shield-lock me-1 me-sm-2"></i>Change Password
                             </button>
                           </div>
                         </div>
@@ -135,9 +156,9 @@ export function showEditProfile(container, user, feedback = { type: '', message:
               </div>
               
               <!-- Feedback Message -->
-              <div class="row mt-3 mt-md-4">
+              <div class="row mt-2 mt-sm-3 mt-md-4">
                 <div class="col-12">
-                  <p class="text-center fw-bold mb-0
+                  <p class="text-center fw-bold mb-0 small
                     ${feedback.type === 'error' ? 'text-danger' : ''}
                     ${feedback.type === 'success' ? 'text-success' : ''}
                     ${feedback.type === 'info' ? 'text-info' : ''}
@@ -149,10 +170,10 @@ export function showEditProfile(container, user, feedback = { type: '', message:
               </div>
 
               <!-- Back to Home Link -->
-              <div class="row mt-3 mt-md-4">
+              <div class="row mt-2 mt-sm-3 mt-md-4">
                 <div class="col-12 text-center">
-                  <a href="#/main" class="text-decoration-none text-brand-primary fw-medium">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Home
+                  <a href="#/main" class="text-decoration-none text-brand-primary fw-medium small">
+                    <i class="bi bi-arrow-left me-1 me-sm-2"></i>Back to Home
                   </a>
                 </div>
               </div>
@@ -211,7 +232,6 @@ export function showEditProfile(container, user, feedback = { type: '', message:
   }
 
 
-  // --- Edit Profile Form Logic ---
   const editProfileForm = container.querySelector('#edit-profile-form');
   const saveButton = editProfileForm.querySelector('button[type="submit"]');
   const usernameInput = container.querySelector('#username');
@@ -222,7 +242,6 @@ export function showEditProfile(container, user, feedback = { type: '', message:
 
   function checkIfEditProfileChangedAndValid() {
     const isChanged = usernameInput.value.trim() !== initialUsername || emailInput.value.trim() !== initialEmail;
-    // Disables if no changes OR if form is not valid based on native browser validation
     saveButton.disabled = !isChanged || !editProfileForm.checkValidity();
   }
 

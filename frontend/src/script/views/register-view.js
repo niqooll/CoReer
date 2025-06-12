@@ -7,75 +7,87 @@ function isPasswordMatch(value, formData) {
 
 export function showRegister(container, errorMessage = '', onSubmit) {
   container.innerHTML = `
-  <section class="login-register-section py-3 min-vh-75 d-flex align-items-center position-relative overflow-hidden login-gradient-bg">
+  <section class="login-register-section login-gradient-bg">
       <div class="login-blob-bg blob-one"></div>
       <div class="login-blob-bg blob-two"></div>
-      <div class="container position-relative z-index-1">
-        <div class="row justify-content-center">
-          <div class="col-lg-5 col-md-7 col-sm-9">
-            <div class="card p-4 shadow-lg border-0 rounded-4 animate-fade-in">
-              <h3 class="card-title text-center mb-4 fw-bold text-dark-blue">Buat Akun CoReer</h3>
-              <form id="register-form" novalidate>
-                <div class="mb-3">
-                  <label for="username" class="form-label visually-hidden">Username</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    class="form-control form-control-lg"
-                    placeholder="Masukkan username"
-                    required
-                  />
-                  <small id="username-error" class="text-danger mt-1" style="display:none;"></small>
-                </div>
-                <div class="mb-3">
-                  <label for="email" class="form-label visually-hidden">Email</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    class="form-control form-control-lg"
-                    placeholder="Masukkan email Anda"
-                    required
-                  />
-                  <small id="email-error" class="text-danger mt-1" style="display:none;"></small>
-                </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label visually-hidden">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    class="form-control form-control-lg"
-                    placeholder="Buat password"
-                    required
-                  />
-                  <small id="password-error" class="text-danger mt-1" style="display:none;"></small>
-                </div>
-                <div class="mb-3">
-                  <label for="passwordConfirm" class="form-label visually-hidden">Konfirmasi Password</label>
-                  <input
-                    type="password"
-                    id="passwordConfirm"
-                    name="passwordConfirm"
-                    class="form-control form-control-lg"
-                    placeholder="Konfirmasi password"
-                    required
-                  />
-                  <small id="passwordConfirm-error" class="text-danger mt-1" style="display:none;"></small>
-                </div>
-                ${errorMessage ? `<p class="text-danger mt-3 text-center animate-fade-in">${errorMessage}</p>` : ''}
-                <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 custom-btn-auth">Register</button>
-              </form>
-              <div class="mt-4 text-center">
-                Sudah punya akun? <a href="#/login" class="text-brand-primary fw-semibold">Login di sini</a>
+      <div class="register-container">
+        <div class="register-form-wrapper">
+          <div class="card">
+            <h3 class="card-title">Buat Akun CoReer</h3>
+            <form id="register-form" novalidate>
+              <div class="form-group">
+                <label for="username" class="visually-hidden">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="form-control"
+                  placeholder="Masukkan username"
+                  required
+                />
+                <small id="username-error" class="error-message"></small>
               </div>
+              <div class="form-group">
+                <label for="email" class="visually-hidden">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="Masukkan email Anda"
+                  required
+                />
+                <small id="email-error" class="error-message"></small>
+              </div>
+              <div class="form-group">
+                <label for="password" class="visually-hidden">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Buat password"
+                  required
+                />
+                <small id="password-error" class="error-message"></small>
+              </div>
+              <div class="form-group">
+                <label for="passwordConfirm" class="visually-hidden">Konfirmasi Password</label>
+                <input
+                  type="password"
+                  id="passwordConfirm"
+                  name="passwordConfirm"
+                  class="form-control"
+                  placeholder="Konfirmasi password"
+                  required
+                />
+                <small id="passwordConfirm-error" class="error-message"></small>
+              </div>
+              ${errorMessage ? `<div class="alert alert-danger">${errorMessage}</div>` : ''}
+              <button type="submit" class="btn-submit">Register</button>
+            </form>
+            <div class="login-link">
+              <span>Sudah punya akun? <a href="#/login" class="link-primary">Login di sini</a></span>
             </div>
           </div>
         </div>
       </div>
     </section>
   `;
+
+  const form = container.querySelector('#register-form');
+  const errorElements = form.querySelectorAll('.error-message');
+
+  function hideError(errorElement) {
+    errorElement.style.display = 'none';
+  }
+
+  function showError(errorElement, message) {
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+  }
+
+  errorElements.forEach(hideError);
 
   bindFormValidation({
     formId: 'register-form',
@@ -109,11 +121,13 @@ export function showRegister(container, errorMessage = '', onSubmit) {
       },
     },
     onSubmit,
+    onShowError: showError,
+    onHideError: hideError,
   });
 }
 
 export function showSuccessMessage(message) {
-  alert(message); // atau bisa ganti dengan toast/modal
+  alert(message);
 }
 
 export function redirectToLogin() {

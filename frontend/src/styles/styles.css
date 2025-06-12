@@ -2040,3 +2040,247 @@ footer.custom-footer p {
         justify-content: center;
       }
     }
+
+* {
+  box-sizing: border-box;
+}
+
+.login-register-section {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 1rem 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.login-blob-bg {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 0;
+}
+
+.blob-one {
+  width: 300px;
+  height: 300px;
+  top: -150px;
+  left: -150px;
+}
+
+.blob-two {
+  width: 200px;
+  height: 200px;
+  bottom: -100px;
+  right: -100px;
+}
+
+.register-container {
+  width: 100%;
+  max-width: none;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.register-form-wrapper {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  margin: 0;
+  width: 100%;
+}
+
+.card-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  color: #4a90a4;
+  font-size: 1.75rem;
+  letter-spacing: -0.5px;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e8ecf0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+  background-color: #fafbfc;
+  color: #333;
+}
+
+.form-control::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.form-control:focus {
+  border-color: #4a90a4;
+  box-shadow: 0 0 0 3px rgba(74, 144, 164, 0.1);
+  background-color: white;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  display: none;
+  margin-top: 0.25rem;
+}
+
+.alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  border: 1px solid #f5c6cb;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #4a90a4 0%, #5aa3bb 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(74, 144, 164, 0.3);
+  background: linear-gradient(135deg, #3a7a8a 0%, #4a90a4 100%);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.link-primary {
+  color: #4a90a4;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.link-primary:hover {
+  color: #3a7a8a;
+  text-decoration: underline;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .login-register-section {
+    padding: 0.5rem 0;
+  }
+  
+  .register-form-wrapper {
+    width: 100vw;
+    max-width: none;
+    padding: 0 1rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin: 0;
+    width: 100%;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-form-wrapper {
+    padding: 0 0.5rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .form-control {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-submit {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .register-form-wrapper {
+    padding: 0 0.25rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .register-form-wrapper {
+    padding: 0;
+    width: 100%;
+  }
+  
+  .card {
+    border-radius: 0;
+    margin: 0;
+    padding: 0.75rem;
+  }
+}
+    
+
+    
+
+    

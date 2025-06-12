@@ -16,7 +16,7 @@ export function renderLanding() {
             </p>
             <div class="d-flex gap-3 mt-4 animate-fade-in delay-2">
               <button id="btn-check-cv" class="btn btn-primary btn-lg custom-btn-landing">Coba Analisis CV Sekarang</button>
-              <button id="btn-learn-more" class="btn btn-outline-secondary btn-lg custom-btn-landing-outline">Pelajari Lebih Lanjut</button>
+              <a href="#/FAQ" class="btn btn-outline-secondary btn-lg custom-btn-landing-outline text-decoration-none">Pelajari Lebih Lanjut</a>
             </div>
           </div>
 
