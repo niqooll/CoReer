@@ -39,38 +39,4 @@ CoReer dibangun menggunakan kombinasi teknologi modern di tiga lapisan utama: Fr
 
 Repositori CoReer ini terdiri dari tiga komponen utama: frontend, backend, dan ml. Setiap komponen memiliki lingkungan dan dependensinya sendiri.
 
-CoReer/
-├── 📦 backend/                  # 🌐 Hapi.js RESTful API server
-│   ├── 📂 src/
-│   │   ├── 📁 config/
-│   │   │   └── 📄 db.js         # 🔐 Database
-│   │   ├── 📁 controllers/      # 🧠 Logika bisnis & 🔗 integrasi DB + ML
-│   │   ├── 📁 models/           # 🧠 🔗 integrasi DB + ML
-│   │   └── 🧩 server.js         # 🚀 Inisialisasi server Hapi.js
-│   ├── 📁 node_modules/
-│   ├── 📄 package.json          # 📌 Dependensi & script backend
-│   └── 🔐 .env                  # ⚙️ Variabel lingkungan (PORT, DB_URI, JWT, DLL)
-│
-├── 🖥️ frontend/                 # 💻 SPA berbasis Vanilla JavaScript
-│   ├── 📄 index.html            # 📄 Entry point HTML utama
-│   ├── 📁 src/
-│   │   ├── 🖼️ assets/           # 🖌️ Gambar, ikon, logo
-│   │   ├── 🧩 components/       # 🔄 Komponen UI: Navbar, Card, Modal, dll.
-│   │   ├── 📄 pages/            # 📲 Halaman utama: Login, Dashboard, dll.
-│   │   ├── 🧠 scripts/          # 🧩 Logika utama, interaksi API
-│   │   └── 🎨 styles/           # 🎀 Styling CSS (Bootstrap & custom)
-│   ├── 📁 node_modules/
-│   ├── 📄 package.json          # 📌 Dependensi & script frontend
-│   ├── ⚙️ webpack.config.js     # 🔧 Konfigurasi Webpack
-│   └── 📜 .babelrc              # 🔄 Transpilasi ES6+ via Babel
-│
-├── 🤖 ml-service/               # 🧠 Layanan Machine Learning (Python + Flask)
-│   ├── 🧩 app.py                # 🚀 API endpoint untuk parsing & rekomendasi CV
-│   ├── 🧩 ml_service.py         # 🔌 Setup utama aplikasi Flask
-│   ├── 📁 models/               # 📊 Model ML terlatih (TensorFlow, Sklearn)
-│   ├── 📄 requirements.txt      # 📦 Dependensi Python (Flask, TensorFlow, dll.)
-│   └── 📁 dataset/              # 🧪 Dataset contoh & data preprocessed
-│
-├── 🚫 .gitignore                # 📂 File & folder yang dikecualikan Git
-├── 📄 LICENSE                   # 📜 Lisensi open-source
-└── 📘 README.md                 # 📝 Dokumentasi proyek (file ini!)
+<pre> ```bash CoReer/ ├── 📦 backend/ # 🌐 Hapi.js RESTful API server │ ├── 📂 src/ │ │ ├── 📁 config/ │ │ │ └── 📄 db.js # 🔐 Database │ │ ├── 📁 controllers/ # 🧠 Logika bisnis & 🔗 integrasi DB + ML │ │ ├── 📁 models/ # 🧠 🔗 integrasi DB + ML │ │ └── 🧩 server.js # 🚀 Inisialisasi server Hapi.js │ ├── 📁 node_modules/ │ ├── 📄 package.json # 📌 Dependensi & script backend │ └── 🔐 .env # ⚙️ Variabel lingkungan (PORT, DB_URI, JWT, DLL) │ ├── 🖥️ frontend/ # 💻 SPA berbasis Vanilla JavaScript │ ├── 📄 index.html # 📄 Entry point HTML utama │ ├── 📁 src/ │ │ ├── 🖼️ assets/ # 🖌️ Gambar, ikon, logo │ │ ├── 🧩 components/ # 🔄 Komponen UI: Navbar, Card, Modal, dll. │ │ ├── 📄 pages/ # 📲 Halaman utama: Login, Dashboard, dll. │ │ ├── 🧠 scripts/ # 🧩 Logika utama, interaksi API │ │ └── 🎨 styles/ # 🎀 Styling CSS (Bootstrap & custom) │ ├── 📁 node_modules/ │ ├── 📄 package.json # 📌 Dependensi & script frontend │ ├── ⚙️ webpack.config.js # 🔧 Konfigurasi Webpack │ └── 📜 .babelrc # 🔄 Transpilasi ES6+ via Babel │ ├── 🤖 ml-service/ # 🧠 Layanan Machine Learning (Python + Flask) │ ├── 🧩 app.py # 🚀 API endpoint untuk parsing & rekomendasi CV │ ├── 🧩 ml_service.py # 🔌 Setup utama aplikasi Flask │ ├── 📁 models/ # 📊 Model ML terlatih (TensorFlow, Sklearn) │ ├── 📄 requirements.txt # 📦 Dependensi Python (Flask, TensorFlow, dll.) │ └── 📁 dataset/ # 🧪 Dataset contoh & data preprocessed │ ├── 🚫 .gitignore # 📂 File & folder yang dikecualikan Git ├── 📄 LICENSE # 📜 Lisensi open-source └── 📘 README.md # 📝 Dokumentasi proyek (file ini!) ``` </pre>
