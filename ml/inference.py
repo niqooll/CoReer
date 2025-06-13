@@ -1,5 +1,5 @@
 """
-Proses Inferensi (Pencocokan)
+Skrip untuk Menjalankan Proses Inferensi (Pencocokan)
 
 Tujuan Utama:
 -------------
