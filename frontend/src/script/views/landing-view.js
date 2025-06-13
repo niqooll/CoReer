@@ -38,7 +38,7 @@ export function renderLanding() {
                       <div class="card-body d-flex flex-column text-center">
                           <i class="bi bi-file-earmark-bar-graph display-4 mb-3 text-brand-primary"></i>
                           <h5 class="card-title fw-bold mb-3">Analisis CV Cerdas</h5>
-                          <p class="card-text text-muted flex-grow-1 d-flex align-items-center justify-content-center">Dapatkan skor instan dan masukan berbasis AI pada CV Anda untuk menyoroti kekuatan dan area yang perlu ditingkatkan.</p>
+                          <p class="card-text text-muted flex-grow-1 d-flex align-items-center justify-content-center">Dapatkan skor instan dan masukan berbasis AI pada CV Anda untuk menyoroti kekuatan serta area yang perlu ditingkatkan.</p>
                       </div>
                   </div>
               </div>

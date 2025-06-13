@@ -57,7 +57,7 @@ export function renderMainPage(user, errorMessage = '') {
                                     style="height: 200px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; border-color: var(--normal) !important;">
                                     <p class="m-0 fw-semibold text-muted">
                                         <i class="bi bi-file-earmark-pdf fs-3 text-danger d-block mb-2"></i>
-                                        Jatuhkan CV Anda di sini (.pdf) atau klik untuk mengunggah
+                                        Drop CV Anda di sini (.pdf) atau klik untuk mengunggah
                                     </p>
                                 </div>
                                 <input type="file" id="cv-upload" accept=".pdf" class="form-control mb-3" />

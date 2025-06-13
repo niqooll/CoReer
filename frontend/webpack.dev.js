@@ -25,6 +25,11 @@ module.exports = merge(common, {
         publicPath: '/icons',
         watch: true,
       },
+      {
+        directory: path.resolve(__dirname),
+        publicPath: '/',
+        watch: true,
+      },
     ],
     port: 8080,
     open: true,
