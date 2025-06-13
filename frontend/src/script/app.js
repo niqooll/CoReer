@@ -1,3 +1,5 @@
+// src/script/app.js
+
 import { getCurrentUser, logout as performLogout, verifyToken } from './models/auth-model.js';
 import { applyViewTransition } from './utils/index.js';
 
@@ -26,15 +28,14 @@ class App {
     const logoutBtnMobile = document.getElementById('logout-btn-mobile');
 
     if (logoutBtnDesktop) {
-      logoutBtnDesktop.addEventListener('click', (e) => {
-        e.preventDefault();
+      logoutBtnDesktop.addEventListener('click', (event) => {
+        event.preventDefault();
         this.confirmLogout();
       });
     }
-
     if (logoutBtnMobile) {
-      logoutBtnMobile.addEventListener('click', (e) => {
-        e.preventDefault();
+      logoutBtnMobile.addEventListener('click', (event) => {
+        event.preventDefault();
         this.confirmLogout();
       });
     }
@@ -49,13 +50,12 @@ class App {
       this.renderPage();
     });
 
-    // Collapse navbar on link click
     const navbarCollapse = document.getElementById('navbarNav');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const navLinksInDrawer = navbarCollapse ? navbarCollapse.querySelectorAll('.nav-link') : [];
 
-    navLinks.forEach(link => {
+    navLinksInDrawer.forEach(link => {
       link.addEventListener('click', () => {
-        if (navbarCollapse.classList.contains('show')) {
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
           const bsCollapse = this.bootstrap.Collapse.getInstance(navbarCollapse) || new this.bootstrap.Collapse(navbarCollapse, { toggle: false });
           bsCollapse.hide();
         }
@@ -65,6 +65,19 @@ class App {
 
   updateNavLinks() {
     const user = getCurrentUser();
+    // Normalisasi currentPath: jika kosong atau '/', anggap sebagai '/landing' untuk pencocokan.
+    let currentPath = window.location.hash.slice(1);
+    if (currentPath === '' || currentPath === '/') {
+        currentPath = 'landing'; // Kita akan mencocokkan ini dengan href="#/landing"
+    }
+
+    const allNavLinks = document.querySelectorAll('#nav-links .nav-link');
+
+    // 1. Hapus kelas 'active' dari semua tautan navigasi terlebih dahulu
+    allNavLinks.forEach(link => {
+      link.classList.remove('active');
+      link.setAttribute('aria-current', 'false');
+    });
 
     const landingLink = document.getElementById('landing-link');
     const faqLink = document.getElementById('FAQ-link');
@@ -72,29 +85,71 @@ class App {
     const registerLink = document.getElementById('register-link');
     const profileDropdownDesktop = document.getElementById('profile-dropdown-desktop');
     const profileLinksMobile = document.getElementById('profile-links-mobile');
-    const historyLink = document.getElementById('history-link');
 
+    // Perbarui visibilitas tautan berdasarkan status login
     if (user) {
       if (landingLink) landingLink.style.display = 'block';
       if (faqLink) faqLink.style.display = 'block';
-      if (historyLink) historyLink.style.display = 'block';
 
       if (loginLink) loginLink.style.display = 'none';
       if (registerLink) registerLink.style.display = 'none';
 
-      if (profileDropdownDesktop) profileDropdownDesktop.classList.remove('d-none');
+      if (profileDropdownDesktop) {
+        profileDropdownDesktop.classList.remove('d-none');
+        const dropdownElement = profileDropdownDesktop.querySelector('.dropdown-toggle');
+        if (dropdownElement && this.bootstrap.Dropdown) {
+          let bsDropdown = this.bootstrap.Dropdown.getInstance(dropdownElement);
+          if (!bsDropdown) {
+            bsDropdown = new this.bootstrap.Dropdown(dropdownElement);
+          }
+        }
+      }
       if (profileLinksMobile) profileLinksMobile.classList.remove('d-none');
     } else {
       if (landingLink) landingLink.style.display = 'none';
-      if (historyLink) historyLink.style.display = 'none';
+      if (profileDropdownDesktop) profileDropdownDesktop.classList.add('d-none');
+      if (profileLinksMobile) profileLinksMobile.classList.add('d-none');
 
       if (faqLink) faqLink.style.display = 'block';
       if (loginLink) loginLink.style.display = 'block';
       if (registerLink) registerLink.style.display = 'block';
-
-      if (profileDropdownDesktop) profileDropdownDesktop.classList.add('d-none');
-      if (profileLinksMobile) profileLinksMobile.classList.add('d-none');
     }
+
+    // 2. Tambahkan kelas 'active' ke tautan yang sesuai
+    allNavLinks.forEach(link => {
+      const linkPath = link.getAttribute('href')?.slice(1);
+
+      // Logika utama untuk mencocokkan path dan mengaktifkan link
+      if (linkPath === currentPath) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      }
+
+      // Khusus untuk dropdown "Profile":
+      // Kita perlu memastikan dropdown toggle aktif HANYA jika salah satu dari child link-nya aktif.
+      // DAN kita perlu memastikan dropdown toggle itu sendiri TIDAK aktif jika path-nya hanya '#'
+      const parentDropdownLi = link.closest('.nav-item.dropdown');
+      const dropdownToggle = parentDropdownLi ? parentDropdownLi.querySelector('.dropdown-toggle') : null;
+
+      if (parentDropdownLi && dropdownToggle) {
+          // Jika currentPath adalah salah satu dari sub-item dropdown (edit-profile atau history)
+          if (currentPath === 'edit-profile' || currentPath === 'history') {
+              // Aktifkan dropdown toggle itu sendiri
+              dropdownToggle.classList.add('active');
+              dropdownToggle.setAttribute('aria-current', 'page');
+              // Jika link saat ini adalah item di dalam dropdown, aktifkan juga itemnya
+              if (linkPath === currentPath) {
+                  link.classList.add('active');
+                  link.setAttribute('aria-current', 'page');
+              }
+          } else {
+              // Jika currentPath BUKAN salah satu dari sub-item dropdown,
+              // pastikan dropdown toggle tidak aktif.
+              dropdownToggle.classList.remove('active');
+              dropdownToggle.setAttribute('aria-current', 'false');
+          }
+      }
+    });
   }
 
   async renderPage() {

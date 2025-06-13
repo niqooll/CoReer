@@ -6,8 +6,8 @@
   --brand-dark: #2D7F92;
   --brand-light: #f8f9fa;
 
-  --brand-primary-hover: #3698B0;
-  --brand-primary-active: #30879C;
+  --brand-primary-hover: #3698B0; /* Warna hover */
+  --brand-primary-active: #30879C; /* Warna saat diklik */
 
   --normal: var(--brand-primary);
   --normal-hover: var(--brand-primary-hover);
@@ -29,7 +29,6 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden; /* Hanya untuk scroll horizontal */
-  /* overflow-y: hidden; /* Coba ini jika yakin halaman login tidak akan pernah di-scroll */
 }
 
 body {
@@ -61,17 +60,41 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
+/* Gaya saat kursor diarahkan (hover) */
 .custom-navbar .nav-link:hover {
   background-color: var(--brand-primary-hover);
   color: white;
   transform: translateY(-2px);
 }
 
+/* Gaya saat elemen diklik (active state asli Bootstrap) */
 .custom-navbar .nav-link:active {
   background-color: var(--brand-primary-active);
   color: white;
 }
 
+/* --- MENYESUAIKAN GAYA UNTUK NAVIGASI AKTIF (kelas .active) --- */
+.custom-navbar .nav-link.active {
+  background-color: var(--brand-primary-hover); /* Sama dengan hover */
+  color: white; /* Sama dengan hover */
+  transform: translateY(-2px); /* Sama dengan hover */
+  /* Anda bisa menambahkan font-weight: bold; jika ingin tetap sedikit lebih menonjol */
+}
+
+/* Pastikan dropdown toggle juga aktif jika salah satu itemnya aktif */
+.custom-navbar .nav-item.dropdown .nav-link.dropdown-toggle.active {
+    background-color: var(--brand-primary-hover);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Untuk item di dalam dropdown menu yang aktif */
+.dropdown-menu .dropdown-item.active {
+    background-color: var(--brand-primary-hover) !important; /* Gunakan !important jika diperlukan untuk menimpa gaya Bootstrap */
+    color: white !important;
+}
+
+/* Untuk Brand Navbar */
 .custom-navbar .navbar-brand {
   color: var(--brand-dark);
   font-weight: 700;
