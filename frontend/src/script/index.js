@@ -1,10 +1,9 @@
 // src/script/index.js
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap'; // PENTING: Pertahankan hanya ini untuk JS Bootstrap
+import * as bootstrap from 'bootstrap'; 
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
-import '../styles/styles.css'; // Mengimpor CSS kustom Anda
-import logo from '../public/image/logo.png'; // Mengimpor gambar logo
+import '../styles/styles.css';
+import logo from '../public/image/logo.png';
 import App from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,11 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
         logoImg.src = logo;
         logoImg.alt = 'CoReer Logo';
         logoImg.className = 'logo-image';
-
         brandLink.innerHTML = '';
         brandLink.appendChild(logoImg);
     }
 
-    const app = new App();
+    const app = new App({ bootstrapInstance: bootstrap });
     app.init();
 });

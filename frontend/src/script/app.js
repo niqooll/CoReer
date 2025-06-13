@@ -2,10 +2,10 @@ import { getCurrentUser, logout as performLogout, verifyToken } from './models/a
 import { applyViewTransition } from './utils/index.js';
 
 class App {
-  constructor({ appContainerId = 'app' } = {}) {
+  constructor({ appContainerId = 'app', bootstrapInstance } = {}) {
     this.appContainer = document.getElementById(appContainerId);
     this.publicRoutes = ['/', '/login', '/register', '/FAQ'];
-    this._bindEvents(); // Pastikan ini dipanggil di konstruktor
+    this.bootstrap = bootstrapInstance;
 
     this.routePresenters = {
       '/': import('./presenters/landing-presenter.js').then(m => m.default),
@@ -17,27 +17,28 @@ class App {
       '/edit-profile': import('./presenters/edit-profile-presenter.js').then(m => m.default),
       '/history': import('./presenters/history-presenter.js').then(m => m.default),
     };
+
+    this._bindEvents();
   }
 
   _bindEvents() {
-    // Event listener untuk tombol logout (desktop dan mobile)
     const logoutBtnDesktop = document.getElementById('logout-btn-desktop');
     const logoutBtnMobile = document.getElementById('logout-btn-mobile');
 
     if (logoutBtnDesktop) {
-      logoutBtnDesktop.addEventListener('click', (event) => {
-        event.preventDefault();
-        this.confirmLogout();
-      });
-    }
-    if (logoutBtnMobile) {
-      logoutBtnMobile.addEventListener('click', (event) => {
-        event.preventDefault();
+      logoutBtnDesktop.addEventListener('click', (e) => {
+        e.preventDefault();
         this.confirmLogout();
       });
     }
 
-    // Event listener untuk perubahan hash URL dan DOMContentLoaded
+    if (logoutBtnMobile) {
+      logoutBtnMobile.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.confirmLogout();
+      });
+    }
+
     window.addEventListener('hashchange', () => {
       this.updateNavLinks();
       this.renderPage();
@@ -48,34 +49,18 @@ class App {
       this.renderPage();
     });
 
-    // --- LOGIKA BARU UNTUK MENUTUP DRAWER NAVIGASI DI MOBILE ---
-    const navbarToggler = document.querySelector('.navbar-toggler');
+    // Collapse navbar on link click
     const navbarCollapse = document.getElementById('navbarNav');
+    const navLinks = document.querySelectorAll('.nav-link');
 
-    // Pastikan elemen-elemennya ada sebelum menambahkan event listener
-    if (navbarCollapse && navbarToggler) {
-      // Dapatkan semua nav-link di dalam navbar-collapse
-      const navLinksInDrawer = navbarCollapse.querySelectorAll('.nav-link');
-
-      // Iterasi setiap link dan tambahkan event listener
-      navLinksInDrawer.forEach(link => {
-        link.addEventListener('click', () => {
-          // Periksa apakah drawer sedang terbuka (memiliki class 'show')
-          // dan apakah itu di mode mobile (navbarToggler terlihat)
-          const isDrawerOpen = navbarCollapse.classList.contains('show');
-          // Memeriksa display style dari toggler untuk menentukan mode mobile
-          // display: 'none' berarti desktop, selain itu (misal 'block') berarti mobile
-          const isTogglerVisible = window.getComputedStyle(navbarToggler).display !== 'none';
-
-          if (isDrawerOpen && isTogglerVisible) {
-            // Jika drawer terbuka di mode mobile, picu klik pada toggler
-            // untuk menutup drawer secara otomatis
-            navbarToggler.click();
-          }
-        });
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (navbarCollapse.classList.contains('show')) {
+          const bsCollapse = this.bootstrap.Collapse.getInstance(navbarCollapse) || new this.bootstrap.Collapse(navbarCollapse, { toggle: false });
+          bsCollapse.hide();
+        }
       });
-    }
-    // --- AKHIR LOGIKA BARU ---
+    });
   }
 
   updateNavLinks() {
@@ -97,12 +82,8 @@ class App {
       if (loginLink) loginLink.style.display = 'none';
       if (registerLink) registerLink.style.display = 'none';
 
-      if (profileDropdownDesktop) {
-        profileDropdownDesktop.classList.remove('d-none');
-      }
-      if (profileLinksMobile) {
-        profileLinksMobile.classList.remove('d-none');
-      }
+      if (profileDropdownDesktop) profileDropdownDesktop.classList.remove('d-none');
+      if (profileLinksMobile) profileLinksMobile.classList.remove('d-none');
     } else {
       if (landingLink) landingLink.style.display = 'none';
       if (historyLink) historyLink.style.display = 'none';
@@ -111,12 +92,8 @@ class App {
       if (loginLink) loginLink.style.display = 'block';
       if (registerLink) registerLink.style.display = 'block';
 
-      if (profileDropdownDesktop) {
-        profileDropdownDesktop.classList.add('d-none');
-      }
-      if (profileLinksMobile) {
-        profileLinksMobile.classList.add('d-none');
-      }
+      if (profileDropdownDesktop) profileDropdownDesktop.classList.add('d-none');
+      if (profileLinksMobile) profileLinksMobile.classList.add('d-none');
     }
   }
 
@@ -125,12 +102,12 @@ class App {
     const hash = window.location.hash || '#/';
     const path = hash.slice(1);
 
-    if (user && user.token) {
-      const isTokenValid = await verifyToken();
-      if (!isTokenValid) {
-        console.warn('Token kedaluwarsa atau tidak valid. Memaksa logout dan mengarahkan ke halaman login.');
+    if (user?.token) {
+      const valid = await verifyToken();
+      if (!valid) {
+        console.warn('Token invalid, logging out');
         performLogout();
-        user = null;
+        this.updateNavLinks();
         window.location.hash = '#/login';
         return;
       }
@@ -141,40 +118,31 @@ class App {
       return;
     }
 
-    let PresenterModule;
     try {
       const module = await this.routePresenters[path];
-      PresenterModule = module;
-
-      if (!PresenterModule) {
+      if (!module) {
         this.appContainer.innerHTML = '<h1>404 Page Not Found</h1>';
         return;
       }
-    } catch (error) {
-      console.error(`Gagal memuat presenter untuk path: ${path}`, error);
-      this.appContainer.innerHTML = '<h1>Gagal memuat halaman</h1>';
-      return;
-    }
 
-    await applyViewTransition('#app', async () => {
-      if (typeof PresenterModule === 'function' && PresenterModule.prototype?.init instanceof Function) {
-        const instance = new PresenterModule(this.appContainer);
-        if (instance.init instanceof Function) {
-          await instance.init();
+      await applyViewTransition('#app', async () => {
+        if (typeof module === 'function' && module.prototype?.init) {
+          const presenter = new module(this.appContainer);
+          await presenter.init();
+        } else if (module?.init) {
+          await module.init(this.appContainer);
+        } else {
+          this.appContainer.innerHTML = '<h1>Invalid Presenter</h1>';
         }
-      } else if (PresenterModule && typeof PresenterModule.init === 'function') {
-        await PresenterModule.init(this.appContainer);
-      } else {
-        this.appContainer.innerHTML = '<h1>Presenter Tidak Valid</h1>';
-      }
-    });
+      });
+    } catch (err) {
+      console.error(`Failed to load presenter for ${path}`, err);
+      this.appContainer.innerHTML = '<h1>Error Loading Page</h1>';
+    }
   }
 
   confirmLogout() {
-    // PERHATIAN: window.confirm tidak direkomendasikan dalam iframe Canvas.
-    // Sebaiknya ganti dengan modal UI kustom jika ini adalah aplikasi di Canvas.
-    const isConfirmed = window.confirm('Apakah Anda yakin ingin keluar dari akun?');
-    if (isConfirmed) {
+    if (window.confirm('Apakah Anda yakin ingin keluar dari akun?')) {
       this.logout();
     }
   }

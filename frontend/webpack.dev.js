@@ -1,4 +1,3 @@
-// webpack.dev.js
 const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
@@ -11,7 +10,7 @@ module.exports = merge(common, {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-      },
+      }
     ],
   },
   devServer: {
@@ -22,14 +21,8 @@ module.exports = merge(common, {
       },
       {
         directory: path.resolve(__dirname, 'src/public'),
-        publicPath: '/icons',
         watch: true,
-      },
-      {
-        directory: path.resolve(__dirname),
-        publicPath: '/',
-        watch: true,
-      },
+      }
     ],
     port: 8080,
     open: true,
@@ -42,9 +35,6 @@ module.exports = merge(common, {
         warnings: false,
       },
     },
-    devMiddleware: {
-      writeToDisk: true,
-    },
+    // writeToDisk: true, // Hanya aktifkan jika memang perlu file fisik
   },
 });
-
