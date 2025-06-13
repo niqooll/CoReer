@@ -1,5 +1,5 @@
 """
-Layanan API untuk Model Pencocokan CV (CoReer)
+Layanan API untuk Model Pencocokan CV
 
 Tujuan Utama:
 -------------
